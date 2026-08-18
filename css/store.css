@@ -3240,3 +3240,35 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 450px) {
+
+  .search-button {
+    width: auto !important;
+    min-width: 72px !important;
+
+    padding: 0 10px !important;
+
+    font-size: 8px !important;
+  }
+
+  .search-button span {
+    display: inline !important;
+  }
+
+  .search-icon {
+    font-size: 14px !important;
+  }
+
+  .header-actions {
+    gap: 5px;
+  }
+
+  .cart-button {
+    min-width: 66px !important;
+  }
+
+  #accountButton {
+    min-width: 68px !important;
+  }
+}
