@@ -28,6 +28,7 @@
         <span>STORE ADMIN</span>
       </div>
 
+
       <nav class="sidebar-nav">
 
         <button
@@ -44,6 +45,15 @@
           type="button"
         >
           Products
+        </button>
+
+        <button
+          id="archiveNav"
+          class="nav-item"
+          type="button"
+        >
+          Archive
+          <span id="archiveCountBadge">0</span>
         </button>
 
         <a
@@ -71,6 +81,7 @@
 
       </nav>
 
+
       <button
         id="logoutButton"
         class="logout-button"
@@ -97,6 +108,7 @@
           </h2>
 
         </div>
+
 
         <button
           id="createProductButton"
@@ -130,6 +142,20 @@
 
             </div>
 
+
+            <div class="stat-card">
+
+              <span>
+                Archived
+              </span>
+
+              <strong id="archivedCount">
+                0
+              </strong>
+
+            </div>
+
+
             <div class="stat-card">
 
               <span>
@@ -142,6 +168,7 @@
 
             </div>
 
+
             <div class="stat-card">
 
               <span>
@@ -153,6 +180,7 @@
               </strong>
 
             </div>
+
 
             <div class="stat-card">
 
@@ -185,6 +213,7 @@
 
               </div>
 
+
               <button
                 id="createProductButtonSecondary"
                 type="button"
@@ -194,27 +223,11 @@
 
             </div>
 
+
             <div
               id="productsContainer"
               class="products-container"
             >
-
-              <div class="empty-state">
-
-                <div class="empty-icon">
-                  +
-                </div>
-
-                <h4>
-                  No products yet
-                </h4>
-
-                <p>
-                  Add your first product to your store.
-                </p>
-
-              </div>
-
             </div>
 
           </section>
@@ -247,6 +260,7 @@
 
               </div>
 
+
               <button
                 id="productsCreateButton"
                 type="button"
@@ -256,10 +270,63 @@
 
             </div>
 
+
             <div
               id="productsPageContainer"
               class="products-container"
             >
+            </div>
+
+          </section>
+
+        </div>
+
+      </section>
+
+
+      <section
+        id="archiveSection"
+        class="admin-section hidden"
+      >
+
+        <div class="dashboard-content">
+
+          <section class="products-section">
+
+            <div class="section-header">
+
+              <div>
+
+                <p class="eyebrow">
+                  ARCHIVE MANAGEMENT
+                </p>
+
+                <h3>
+                  Archived Listings
+                </h3>
+
+              </div>
+
+            </div>
+
+
+            <div
+              id="archiveContainer"
+              class="products-container"
+            >
+
+              <div class="empty-state">
+
+                <h4>
+                  No archived listings
+                </h4>
+
+                <p>
+                  Archived products will appear here.
+                </p>
+
+              </div>
+
             </div>
 
           </section>
@@ -293,6 +360,7 @@
               </div>
 
             </div>
+
 
             <div
               id="customersContainer"
@@ -341,6 +409,7 @@
 
             </div>
 
+
             <div class="settings-grid">
 
               <div class="stat-card">
@@ -355,6 +424,7 @@
 
               </div>
 
+
               <div class="stat-card">
 
                 <span>
@@ -367,6 +437,7 @@
 
               </div>
 
+
               <div class="stat-card">
 
                 <span>
@@ -378,6 +449,7 @@
                 </strong>
 
               </div>
+
 
               <div class="stat-card">
 
@@ -415,6 +487,7 @@
     >
     </div>
 
+
     <div class="modal-card">
 
       <div class="modal-header">
@@ -430,6 +503,7 @@
           </h2>
 
         </div>
+
 
         <button
           id="closeModalButton"
@@ -449,6 +523,7 @@
           type="hidden"
           value=""
         >
+
 
         <div class="form-grid">
 
@@ -593,6 +668,10 @@
                 Sold Out
               </option>
 
+              <option value="archived">
+                Archived
+              </option>
+
             </select>
 
           </div>
@@ -640,6 +719,7 @@
               Product Image
             </label>
 
+
             <div class="product-image-upload">
 
               <input
@@ -654,6 +734,7 @@
                 type="hidden"
                 value=""
               >
+
 
               <label
                 for="productImage"
@@ -689,6 +770,7 @@
                   src=""
                   alt="Product preview"
                 >
+
 
                 <div class="product-image-preview-info">
 

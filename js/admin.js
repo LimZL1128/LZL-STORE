@@ -6,59 +6,40 @@ let currentUser = null;
 
 
 const dashboardSection =
-  document.getElementById(
-    "dashboardSection"
-  );
+  document.getElementById("dashboardSection");
 
 const productsSection =
-  document.getElementById(
-    "productsSection"
-  );
+  document.getElementById("productsSection");
+
+const archiveSection =
+  document.getElementById("archiveSection");
 
 const customersSection =
-  document.getElementById(
-    "customersSection"
-  );
+  document.getElementById("customersSection");
 
 const settingsSection =
-  document.getElementById(
-    "settingsSection"
-  );
+  document.getElementById("settingsSection");
 
 const pageTitle =
-  document.getElementById(
-    "pageTitle"
-  );
+  document.getElementById("pageTitle");
 
 const productForm =
-  document.getElementById(
-    "productForm"
-  );
+  document.getElementById("productForm");
 
 const productModal =
-  document.getElementById(
-    "productModal"
-  );
+  document.getElementById("productModal");
 
 const productMessage =
-  document.getElementById(
-    "productMessage"
-  );
+  document.getElementById("productMessage");
 
 const saveProductButton =
-  document.getElementById(
-    "saveProductButton"
-  );
+  document.getElementById("saveProductButton");
 
 const productImageInput =
-  document.getElementById(
-    "productImage"
-  );
+  document.getElementById("productImage");
 
 const thumbnailUrlInput =
-  document.getElementById(
-    "thumbnailUrl"
-  );
+  document.getElementById("thumbnailUrl");
 
 const productImagePreview =
   document.getElementById(
@@ -82,6 +63,7 @@ const removeProductImageButton =
 
 
 function escapeHTML(value) {
+
   return String(value ?? "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
@@ -143,7 +125,8 @@ async function protectAdminPage() {
   }
 
 
-  currentUser = user;
+  currentUser =
+    user;
 
 
   const adminEmail =
@@ -173,11 +156,13 @@ function showSection(
   [
     dashboardSection,
     productsSection,
+    archiveSection,
     customersSection,
     settingsSection
   ].forEach(item => {
 
     if (item) {
+
       item.classList.add(
         "hidden"
       );
@@ -187,6 +172,7 @@ function showSection(
 
 
   if (section) {
+
     section.classList.remove(
       "hidden"
     );
@@ -194,6 +180,7 @@ function showSection(
 
 
   if (pageTitle) {
+
     pageTitle.textContent =
       title;
   }
@@ -218,7 +205,26 @@ function showSection(
       "active"
     );
   }
+}
 
+
+function getActiveProducts() {
+
+  return products.filter(
+    product =>
+      product.status !==
+      "archived"
+  );
+}
+
+
+function getArchivedProducts() {
+
+  return products.filter(
+    product =>
+      product.status ===
+      "archived"
+  );
 }
 
 
@@ -243,22 +249,6 @@ async function loadStats() {
         )
 
     ]);
-
-
-  if (ordersResult.error) {
-
-    console.error(
-      ordersResult.error
-    );
-  }
-
-
-  if (profilesResult.error) {
-
-    console.error(
-      profilesResult.error
-    );
-  }
 
 
   const orders =
@@ -351,7 +341,6 @@ async function loadStats() {
     revenueCount.textContent =
       `RM ${revenue.toFixed(2)}`;
   }
-
 }
 
 
@@ -376,49 +365,6 @@ async function loadProducts() {
 
     console.error(error);
 
-
-    const errorHTML = `
-      <div class="empty-state">
-
-        <h4>
-          Unable to load products
-        </h4>
-
-        <p>
-          ${escapeHTML(
-            error.message
-          )}
-        </p>
-
-      </div>
-    `;
-
-
-    const dashboardContainer =
-      document.getElementById(
-        "productsContainer"
-      );
-
-    const pageContainer =
-      document.getElementById(
-        "productsPageContainer"
-      );
-
-
-    if (dashboardContainer) {
-
-      dashboardContainer.innerHTML =
-        errorHTML;
-    }
-
-
-    if (pageContainer) {
-
-      pageContainer.innerHTML =
-        errorHTML;
-    }
-
-
     return;
   }
 
@@ -428,28 +374,254 @@ async function loadProducts() {
     [];
 
 
+  updateProductCounts();
+
+  renderProducts();
+
+  renderArchive();
+}
+
+
+function updateProductCounts() {
+
+  const activeProducts =
+    getActiveProducts();
+
+  const archivedProducts =
+    getArchivedProducts();
+
+
   const productCount =
     document.getElementById(
       "productCount"
+    );
+
+  const archivedCount =
+    document.getElementById(
+      "archivedCount"
+    );
+
+  const archiveCountBadge =
+    document.getElementById(
+      "archiveCountBadge"
     );
 
 
   if (productCount) {
 
     productCount.textContent =
-      products.length;
+      activeProducts.length;
   }
 
 
-  renderProducts();
+  if (archivedCount) {
+
+    archivedCount.textContent =
+      archivedProducts.length;
+  }
+
+
+  if (archiveCountBadge) {
+
+    archiveCountBadge.textContent =
+      archivedProducts.length;
+  }
 }
 
 
-function getProductsHTML() {
+function getProductCardHTML(
+  product
+) {
 
-  if (!products.length) {
+  const category =
+    String(
+      product.category ||
+      "toy"
+    ).toLowerCase();
 
-    return `
+
+  const imageHTML =
+    product.thumbnail_url
+      ? `
+        <img
+          src="${escapeHTML(
+            product.thumbnail_url
+          )}"
+          alt="${escapeHTML(
+            product.name
+          )}"
+          loading="lazy"
+        >
+      `
+      : `
+        <div class="product-image-placeholder">
+          NO IMAGE
+        </div>
+      `;
+
+
+  return `
+    <article class="product-card">
+
+      <div class="product-image">
+
+        ${imageHTML}
+
+        ${
+          product.is_hot
+            ? `
+              <span class="admin-hot-badge">
+                HOT
+              </span>
+            `
+            : ""
+        }
+
+      </div>
+
+
+      <div class="product-info">
+
+        <div class="product-top">
+
+          <div>
+
+            <h4>
+              ${escapeHTML(
+                product.name
+              )}
+            </h4>
+
+            <span class="product-id">
+              Product ID:
+              ${escapeHTML(
+                product.limited_id ||
+                "N/A"
+              )}
+            </span>
+
+          </div>
+
+
+          <span
+            class="status-badge ${escapeHTML(
+              product.status ||
+              "active"
+            )}"
+          >
+            ${escapeHTML(
+              product.status ||
+              "active"
+            )}
+          </span>
+
+        </div>
+
+
+        <div class="product-meta-row">
+
+          <span
+            class="category-badge category-${escapeHTML(
+              category
+            )}"
+          >
+            ${escapeHTML(
+              category
+            )}
+          </span>
+
+          ${
+            product.is_hot
+              ? `
+                <span class="hot-mini-badge">
+                  Hot
+                </span>
+              `
+              : ""
+          }
+
+        </div>
+
+
+        <div class="product-details">
+
+          <div>
+
+            <span>
+              Price
+            </span>
+
+            <strong>
+              RM ${Number(
+                product.price ||
+                0
+              ).toFixed(2)}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Stock
+            </span>
+
+            <strong>
+              ${Number(
+                product.stock ||
+                0
+              )}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="product-actions">
+
+          <button
+            class="edit-product"
+            data-id="${escapeHTML(
+              product.id
+            )}"
+            type="button"
+          >
+            Edit
+          </button>
+
+          <button
+            class="delete-product"
+            data-id="${escapeHTML(
+              product.id
+            )}"
+            type="button"
+          >
+            Delete
+          </button>
+
+        </div>
+
+      </div>
+
+    </article>
+  `;
+}
+
+
+function renderProducts() {
+
+  const visibleProducts =
+    getActiveProducts();
+
+
+  let html;
+
+
+  if (!visibleProducts.length) {
+
+    html = `
       <div class="empty-state">
 
         <div class="empty-icon">
@@ -457,210 +629,25 @@ function getProductsHTML() {
         </div>
 
         <h4>
-          No products yet
+          No products
         </h4>
 
         <p>
-          Add your first product to your store.
+          Create a product or restore one from Archive.
         </p>
 
       </div>
     `;
+
+  } else {
+
+    html =
+      visibleProducts
+        .map(
+          getProductCardHTML
+        )
+        .join("");
   }
-
-
-  return products
-    .map(product => {
-
-      const category =
-        String(
-          product.category ||
-          "toy"
-        ).toLowerCase();
-
-
-      const imageHTML =
-        product.thumbnail_url
-          ? `
-            <img
-              src="${escapeHTML(
-                product.thumbnail_url
-              )}"
-              alt="${escapeHTML(
-                product.name
-              )}"
-              loading="lazy"
-            >
-          `
-          : `
-            <div class="product-image-placeholder">
-              NO IMAGE
-            </div>
-          `;
-
-
-      const hotHTML =
-        product.is_hot
-          ? `
-            <span class="admin-hot-badge">
-              HOT
-            </span>
-          `
-          : "";
-
-
-      const hotMiniHTML =
-        product.is_hot
-          ? `
-            <span class="hot-mini-badge">
-              Hot
-            </span>
-          `
-          : "";
-
-
-      return `
-        <article class="product-card">
-
-          <div class="product-image">
-
-            ${imageHTML}
-
-            ${hotHTML}
-
-          </div>
-
-
-          <div class="product-info">
-
-            <div class="product-top">
-
-              <div>
-
-                <h4>
-                  ${escapeHTML(
-                    product.name
-                  )}
-                </h4>
-
-                <span class="product-id">
-                  Product ID:
-                  ${escapeHTML(
-                    product.limited_id ||
-                    "N/A"
-                  )}
-                </span>
-
-              </div>
-
-
-              <span
-                class="status-badge ${escapeHTML(
-                  product.status ||
-                  "active"
-                )}"
-              >
-                ${escapeHTML(
-                  product.status ||
-                  "active"
-                )}
-              </span>
-
-            </div>
-
-
-            <div class="product-meta-row">
-
-              <span
-                class="category-badge category-${escapeHTML(
-                  category
-                )}"
-              >
-                ${escapeHTML(
-                  category
-                )}
-              </span>
-
-              ${hotMiniHTML}
-
-            </div>
-
-
-            <div class="product-details">
-
-              <div>
-
-                <span>
-                  Price
-                </span>
-
-                <strong>
-                  RM ${Number(
-                    product.price ||
-                    0
-                  ).toFixed(2)}
-                </strong>
-
-              </div>
-
-
-              <div>
-
-                <span>
-                  Stock
-                </span>
-
-                <strong>
-                  ${Number(
-                    product.stock ||
-                    0
-                  )}
-                </strong>
-
-              </div>
-
-            </div>
-
-
-            <div class="product-actions">
-
-              <button
-                class="edit-product"
-                data-id="${escapeHTML(
-                  product.id
-                )}"
-                type="button"
-              >
-                Edit
-              </button>
-
-
-              <button
-                class="delete-product"
-                data-id="${escapeHTML(
-                  product.id
-                )}"
-                type="button"
-              >
-                Delete
-              </button>
-
-            </div>
-
-          </div>
-
-        </article>
-      `;
-
-    })
-    .join("");
-}
-
-
-function renderProducts() {
-
-  const html =
-    getProductsHTML();
 
 
   const dashboardContainer =
@@ -675,7 +662,7 @@ function renderProducts() {
 
 
   const className =
-    products.length
+    visibleProducts.length
       ? "products-container product-grid"
       : "products-container";
 
@@ -701,6 +688,187 @@ function renderProducts() {
 
 
   bindProductButtons();
+}
+
+
+function renderArchive() {
+
+  const archivedProducts =
+    getArchivedProducts();
+
+
+  const container =
+    document.getElementById(
+      "archiveContainer"
+    );
+
+
+  if (!container) {
+
+    return;
+  }
+
+
+  if (!archivedProducts.length) {
+
+    container.className =
+      "products-container";
+
+    container.innerHTML = `
+      <div class="empty-state">
+
+        <h4>
+          No archived listings
+        </h4>
+
+        <p>
+          Archived products will appear here.
+        </p>
+
+      </div>
+    `;
+
+    return;
+  }
+
+
+  container.className =
+    "products-container product-grid";
+
+
+  container.innerHTML =
+    archivedProducts
+      .map(product => {
+
+        const imageHTML =
+          product.thumbnail_url
+            ? `
+              <img
+                src="${escapeHTML(
+                  product.thumbnail_url
+                )}"
+                alt="${escapeHTML(
+                  product.name
+                )}"
+                loading="lazy"
+              >
+            `
+            : `
+              <div class="product-image-placeholder">
+                NO IMAGE
+              </div>
+            `;
+
+
+        return `
+          <article class="product-card">
+
+            <div class="product-image">
+              ${imageHTML}
+            </div>
+
+
+            <div class="product-info">
+
+              <div class="product-top">
+
+                <div>
+
+                  <h4>
+                    ${escapeHTML(
+                      product.name
+                    )}
+                  </h4>
+
+                  <span class="product-id">
+                    Product ID:
+                    ${escapeHTML(
+                      product.limited_id ||
+                      "N/A"
+                    )}
+                  </span>
+
+                </div>
+
+
+                <span class="status-badge archived">
+                  Archived
+                </span>
+
+              </div>
+
+
+              <div class="product-details">
+
+                <div>
+
+                  <span>
+                    Price
+                  </span>
+
+                  <strong>
+                    RM ${Number(
+                      product.price ||
+                      0
+                    ).toFixed(2)}
+                  </strong>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    Stock
+                  </span>
+
+                  <strong>
+                    ${Number(
+                      product.stock ||
+                      0
+                    )}
+                  </strong>
+
+                </div>
+
+              </div>
+
+
+              <div class="product-actions">
+
+                <button
+                  class="restore-product"
+                  data-id="${escapeHTML(
+                    product.id
+                  )}"
+                  type="button"
+                >
+                  Restore
+                </button>
+
+
+                <button
+                  class="delete-archived-product"
+                  data-id="${escapeHTML(
+                    product.id
+                  )}"
+                  type="button"
+                >
+                  Delete Permanently
+                </button>
+
+              </div>
+
+            </div>
+
+          </article>
+        `;
+
+      })
+      .join("");
+
+
+  bindArchiveButtons();
 }
 
 
@@ -759,7 +927,394 @@ function bindProductButtons() {
       );
 
     });
+}
 
+
+function bindArchiveButtons() {
+
+  document
+    .querySelectorAll(
+      ".restore-product"
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          restoreProduct(
+            button.dataset.id
+          );
+
+        }
+      );
+
+    });
+
+
+  document
+    .querySelectorAll(
+      ".delete-archived-product"
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          deleteArchivedProduct(
+            button.dataset.id
+          );
+
+        }
+      );
+
+    });
+}
+
+
+async function restoreProduct(
+  id
+) {
+
+  const product =
+    products.find(
+      item =>
+        String(item.id) ===
+        String(id)
+    );
+
+
+  if (!product) {
+
+    return;
+  }
+
+
+  const confirmed =
+    confirm(
+      `Restore "${product.name}" to the store?`
+    );
+
+
+  if (!confirmed) {
+
+    return;
+  }
+
+
+  const {
+    error
+  } =
+    await supabase
+      .from("products")
+      .update({
+        status: "active"
+      })
+      .eq(
+        "id",
+        id
+      );
+
+
+  if (error) {
+
+    alert(
+      error.message
+    );
+
+    return;
+  }
+
+
+  await loadProducts();
+
+
+  alert(
+    `"${product.name}" restored.`
+  );
+}
+
+
+async function getProductOrderCount(
+  productId
+) {
+
+  const {
+    data,
+    error
+  } =
+    await supabase
+      .from("order_items")
+      .select("order_id")
+      .eq(
+        "product_id",
+        productId
+      );
+
+
+  if (error) {
+
+    throw error;
+  }
+
+
+  const orderIds =
+    new Set(
+      (data || [])
+        .map(
+          item =>
+            item.order_id
+        )
+        .filter(Boolean)
+    );
+
+
+  return orderIds.size;
+}
+
+
+async function archiveProduct(
+  id
+) {
+
+  const product =
+    products.find(
+      item =>
+        String(item.id) ===
+        String(id)
+    );
+
+
+  if (!product) {
+
+    return;
+  }
+
+
+  const {
+    error
+  } =
+    await supabase
+      .from("products")
+      .update({
+        status: "archived",
+        is_hot: false
+      })
+      .eq(
+        "id",
+        id
+      );
+
+
+  if (error) {
+
+    throw error;
+  }
+
+
+  await loadProducts();
+
+
+  alert(
+    `"${product.name}" archived.`
+  );
+}
+
+
+async function permanentlyDelete(
+  id
+) {
+
+  const product =
+    products.find(
+      item =>
+        String(item.id) ===
+        String(id)
+    );
+
+
+  if (!product) {
+
+    return;
+  }
+
+
+  const orderCount =
+    await getProductOrderCount(
+      id
+    );
+
+
+  let message =
+    `Permanently delete "${product.name}"?`;
+
+
+  if (orderCount > 0) {
+
+    message +=
+      `\n\nThis listing is connected to ${orderCount} order${orderCount === 1 ? "" : "s"}.`;
+
+    message +=
+      "\nLinked order item records will also be deleted.";
+  }
+
+
+  message +=
+    "\n\nThis action cannot be reversed.";
+
+
+  const confirmed =
+    confirm(
+      message
+    );
+
+
+  if (!confirmed) {
+
+    return;
+  }
+
+
+  if (orderCount > 0) {
+
+    const {
+      error:
+        orderItemsError
+    } =
+      await supabase
+        .from("order_items")
+        .delete()
+        .eq(
+          "product_id",
+          id
+        );
+
+
+    if (orderItemsError) {
+
+      throw orderItemsError;
+    }
+  }
+
+
+  const {
+    error
+  } =
+    await supabase
+      .from("products")
+      .delete()
+      .eq(
+        "id",
+        id
+      );
+
+
+  if (error) {
+
+    throw error;
+  }
+
+
+  await loadProducts();
+
+
+  alert(
+    `"${product.name}" permanently deleted.`
+  );
+}
+
+
+async function deleteProduct(
+  id
+) {
+
+  const product =
+    products.find(
+      item =>
+        String(item.id) ===
+        String(id)
+    );
+
+
+  if (!product) {
+
+    return;
+  }
+
+
+  const choice =
+    prompt(
+      `Manage "${product.name}"\n\nType:\nARCHIVE to archive listing\nDELETE to permanently delete\nCANCEL to cancel`
+    );
+
+
+  if (!choice) {
+
+    return;
+  }
+
+
+  const action =
+    choice
+      .trim()
+      .toUpperCase();
+
+
+  try {
+
+    if (
+      action === "ARCHIVE"
+    ) {
+
+      await archiveProduct(
+        id
+      );
+
+      return;
+    }
+
+
+    if (
+      action === "DELETE"
+    ) {
+
+      await permanentlyDelete(
+        id
+      );
+
+      return;
+    }
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      error.message
+    );
+  }
+}
+
+
+async function deleteArchivedProduct(
+  id
+) {
+
+  try {
+
+    await permanentlyDelete(
+      id
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      error.message
+    );
+  }
 }
 
 
@@ -772,19 +1327,9 @@ async function loadCustomers() {
 
 
   if (!container) {
+
     return;
   }
-
-
-  container.innerHTML = `
-    <div class="empty-state">
-
-      <h4>
-        Loading customers...
-      </h4>
-
-    </div>
-  `;
 
 
   const {
@@ -800,23 +1345,8 @@ async function loadCustomers() {
 
   if (error) {
 
-    console.error(error);
-
-    container.innerHTML = `
-      <div class="empty-state">
-
-        <h4>
-          Unable to load customers
-        </h4>
-
-        <p>
-          ${escapeHTML(
-            error.message
-          )}
-        </p>
-
-      </div>
-    `;
+    container.innerHTML =
+      error.message;
 
     return;
   }
@@ -840,39 +1370,11 @@ async function loadCustomers() {
           No customers yet
         </h4>
 
-        <p>
-          Customer accounts will appear here.
-        </p>
-
       </div>
     `;
 
     return;
   }
-
-
-  const {
-    data: orders,
-    error: ordersError
-  } =
-    await supabase
-      .from("orders")
-      .select(
-        "id,user_id,total,status"
-      );
-
-
-  if (ordersError) {
-
-    console.error(
-      ordersError
-    );
-  }
-
-
-  const orderList =
-    orders ||
-    [];
 
 
   container.className =
@@ -881,748 +1383,38 @@ async function loadCustomers() {
 
   container.innerHTML =
     customers
-      .map(customer => {
+      .map(customer => `
+        <article class="product-card">
 
-        const customerOrders =
-          orderList.filter(
-            order =>
-              String(
-                order.user_id
-              ) ===
-              String(
-                customer.id
-              )
-          );
+          <div class="product-info">
 
+            <div class="product-top">
 
-        const totalSpent =
-          customerOrders.reduce(
-            (
-              total,
-              order
-            ) => {
+              <div>
 
-              const status =
-                String(
-                  order.status ||
-                  ""
-                ).toLowerCase();
-
-
-              if (
-                status !==
-                "completed"
-              ) {
-
-                return total;
-              }
-
-
-              return (
-                total +
-                Number(
-                  order.total ||
-                  0
-                )
-              );
-
-            },
-            0
-          );
-
-
-        return `
-          <article class="product-card">
-
-            <div class="product-info">
-
-              <div class="product-top">
-
-                <div>
-
-                  <h4>
-                    Customer
-                  </h4>
-
-                  <span class="product-id">
-                    ${escapeHTML(
-                      customer.id
-                    )}
-                  </span>
-
-                </div>
-
-
-                <span class="status-badge active">
+                <h4>
                   Customer
+                </h4>
+
+                <span class="product-id">
+                  ${escapeHTML(
+                    customer.id
+                  )}
                 </span>
 
               </div>
 
-
-              <div class="product-details">
-
-                <div>
-
-                  <span>
-                    Orders
-                  </span>
-
-                  <strong>
-                    ${customerOrders.length}
-                  </strong>
-
-                </div>
-
-
-                <div>
-
-                  <span>
-                    Completed Spend
-                  </span>
-
-                  <strong>
-                    RM ${totalSpent.toFixed(2)}
-                  </strong>
-
-                </div>
-
-              </div>
+              <span class="status-badge active">
+                Customer
+              </span>
 
             </div>
 
-          </article>
-        `;
+          </div>
 
-      })
+        </article>
+      `)
       .join("");
-}
-
-
-function openDeleteChoiceModal(
-  productName,
-  orderCount
-) {
-
-  return new Promise(
-    resolve => {
-
-      const oldModal =
-        document.getElementById(
-          "deleteChoiceModal"
-        );
-
-
-      if (oldModal) {
-
-        oldModal.remove();
-      }
-
-
-      const overlay =
-        document.createElement(
-          "div"
-        );
-
-
-      overlay.id =
-        "deleteChoiceModal";
-
-
-      overlay.style.cssText = `
-        position: fixed;
-        inset: 0;
-        z-index: 99999;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        padding: 20px;
-
-        background:
-          rgba(0, 0, 0, 0.82);
-
-        backdrop-filter:
-          blur(14px);
-      `;
-
-
-      const hasOrders =
-        orderCount > 0;
-
-
-      overlay.innerHTML = `
-        <div
-          style="
-            width: min(480px, 100%);
-
-            padding: 28px;
-
-            border:
-              1px solid
-              rgba(177, 145, 255, 0.3);
-
-            border-radius: 18px;
-
-            background:
-              linear-gradient(
-                145deg,
-                rgba(28, 24, 39, 0.99),
-                rgba(8, 8, 12, 0.99)
-              );
-
-            box-shadow:
-              0 30px 80px
-              rgba(0, 0, 0, 0.6),
-              0 0 50px
-              rgba(139, 92, 246, 0.12);
-
-            color: white;
-
-            font-family:
-              Inter,
-              system-ui,
-              sans-serif;
-          "
-        >
-
-          <div
-            style="
-              color: #a98bff;
-
-              font-size: 9px;
-              font-weight: 900;
-
-              letter-spacing: 1.5px;
-            "
-          >
-            PRODUCT MANAGEMENT
-          </div>
-
-
-          <h2
-            style="
-              margin:
-                8px
-                0
-                0;
-
-              font-size: 22px;
-            "
-          >
-            ${escapeHTML(
-              productName
-            )}
-          </h2>
-
-
-          <p
-            style="
-              margin-top: 12px;
-
-              color: #aaa3b2;
-
-              font-size: 12px;
-
-              line-height: 1.7;
-            "
-          >
-
-            ${
-              hasOrders
-                ? `This listing appears in ${orderCount} existing order${orderCount === 1 ? "" : "s"}.`
-                : "This listing has no existing orders."
-            }
-
-          </p>
-
-
-          ${
-            hasOrders
-              ? `
-                <div
-                  style="
-                    margin-top: 16px;
-
-                    padding: 14px;
-
-                    border:
-                      1px solid
-                      rgba(255, 96, 82, 0.25);
-
-                    border-radius: 11px;
-
-                    background:
-                      rgba(255, 70, 55, 0.07);
-
-                    color: #ffaaa0;
-
-                    font-size: 11px;
-
-                    line-height: 1.6;
-                  "
-                >
-                  Permanent deletion removes the linked order item records too.
-                </div>
-              `
-              : `
-                <div
-                  style="
-                    margin-top: 16px;
-
-                    padding: 14px;
-
-                    border:
-                      1px solid
-                      rgba(167, 139, 250, 0.2);
-
-                    border-radius: 11px;
-
-                    background:
-                      rgba(139, 92, 246, 0.07);
-
-                    color: #cbbef1;
-
-                    font-size: 11px;
-
-                    line-height: 1.6;
-                  "
-                >
-                  Archive keeps the listing in your database and hides it from customers.
-                </div>
-              `
-          }
-
-
-          <div
-            style="
-              display: grid;
-
-              gap: 9px;
-
-              margin-top: 22px;
-            "
-          >
-
-            <button
-              id="archiveChoice"
-              type="button"
-              style="
-                height: 46px;
-
-                border:
-                  1px solid
-                  rgba(167, 139, 250, 0.4);
-
-                border-radius: 10px;
-
-                background:
-                  rgba(139, 92, 246, 0.14);
-
-                color: #e5ddff;
-
-                font-weight: 850;
-
-                cursor: pointer;
-              "
-            >
-              Archive Listing
-            </button>
-
-
-            <button
-              id="deleteForeverChoice"
-              type="button"
-              style="
-                height: 46px;
-
-                border:
-                  1px solid
-                  rgba(255, 83, 70, 0.42);
-
-                border-radius: 10px;
-
-                background:
-                  rgba(255, 60, 45, 0.11);
-
-                color: #ff9d94;
-
-                font-weight: 850;
-
-                cursor: pointer;
-              "
-            >
-              Delete Permanently
-            </button>
-
-
-            <button
-              id="cancelChoice"
-              type="button"
-              style="
-                height: 42px;
-
-                border:
-                  1px solid
-                  rgba(255, 255, 255, 0.08);
-
-                border-radius: 10px;
-
-                background:
-                  rgba(255, 255, 255, 0.025);
-
-                color: #9993a1;
-
-                font-weight: 800;
-
-                cursor: pointer;
-              "
-            >
-              Cancel
-            </button>
-
-          </div>
-
-        </div>
-      `;
-
-
-      document.body.appendChild(
-        overlay
-      );
-
-
-      const finish =
-        choice => {
-
-          overlay.remove();
-
-          resolve(choice);
-        };
-
-
-      overlay
-        .querySelector(
-          "#archiveChoice"
-        )
-        .addEventListener(
-          "click",
-          () =>
-            finish(
-              "archive"
-            )
-        );
-
-
-      overlay
-        .querySelector(
-          "#deleteForeverChoice"
-        )
-        .addEventListener(
-          "click",
-          () =>
-            finish(
-              "delete"
-            )
-        );
-
-
-      overlay
-        .querySelector(
-          "#cancelChoice"
-        )
-        .addEventListener(
-          "click",
-          () =>
-            finish(
-              "cancel"
-            )
-        );
-
-
-      overlay.addEventListener(
-        "click",
-        event => {
-
-          if (
-            event.target ===
-            overlay
-          ) {
-
-            finish(
-              "cancel"
-            );
-          }
-
-        }
-      );
-
-    }
-  );
-
-}
-
-
-async function getProductOrderCount(
-  productId
-) {
-
-  const {
-    data,
-    error
-  } =
-    await supabase
-      .from("order_items")
-      .select(
-        "order_id"
-      )
-      .eq(
-        "product_id",
-        productId
-      );
-
-
-  if (error) {
-
-    throw error;
-  }
-
-
-  const uniqueOrders =
-    new Set(
-      (data || [])
-        .map(
-          item =>
-            item.order_id
-        )
-        .filter(Boolean)
-    );
-
-
-  return uniqueOrders.size;
-}
-
-
-async function archiveProduct(
-  productId,
-  productName
-) {
-
-  const {
-    error
-  } =
-    await supabase
-      .from("products")
-      .update({
-        status: "draft",
-        is_hot: false
-      })
-      .eq(
-        "id",
-        productId
-      );
-
-
-  if (error) {
-
-    throw error;
-  }
-
-
-  alert(
-    `"${productName}" has been archived.`
-  );
-
-
-  await Promise.all([
-    loadProducts(),
-    loadStats()
-  ]);
-}
-
-
-async function permanentDeleteProduct(
-  productId,
-  productName,
-  orderCount
-) {
-
-  let warning =
-    `PERMANENT DELETE\n\n"${productName}"`;
-
-
-  if (
-    orderCount > 0
-  ) {
-
-    warning +=
-      `\n\nThis listing appears in ${orderCount} order${orderCount === 1 ? "" : "s"}.`;
-
-    warning +=
-      "\n\nLinked order item records will also be deleted.";
-  }
-
-
-  warning +=
-    "\n\nThis action cannot be reversed.";
-
-
-  const confirmed =
-    confirm(
-      warning
-    );
-
-
-  if (!confirmed) {
-
-    return;
-  }
-
-
-  if (
-    orderCount > 0
-  ) {
-
-    const {
-      error:
-        orderItemDeleteError
-    } =
-      await supabase
-        .from("order_items")
-        .delete()
-        .eq(
-          "product_id",
-          productId
-        );
-
-
-    if (
-      orderItemDeleteError
-    ) {
-
-      throw orderItemDeleteError;
-    }
-  }
-
-
-  const {
-    error:
-      productDeleteError
-  } =
-    await supabase
-      .from("products")
-      .delete()
-      .eq(
-        "id",
-        productId
-      );
-
-
-  if (
-    productDeleteError
-  ) {
-
-    throw productDeleteError;
-  }
-
-
-  alert(
-    `"${productName}" was permanently deleted.`
-  );
-
-
-  await Promise.all([
-    loadProducts(),
-    loadStats()
-  ]);
-}
-
-
-async function deleteProduct(id) {
-
-  const product =
-    products.find(
-      item =>
-        String(
-          item.id
-        ) ===
-        String(id)
-    );
-
-
-  if (!product) {
-
-    alert(
-      "Product not found."
-    );
-
-    return;
-  }
-
-
-  const productName =
-    product.name ||
-    "Unnamed product";
-
-
-  try {
-
-    const orderCount =
-      await getProductOrderCount(
-        id
-      );
-
-
-    const choice =
-      await openDeleteChoiceModal(
-        productName,
-        orderCount
-      );
-
-
-    if (
-      choice === "cancel"
-    ) {
-
-      return;
-    }
-
-
-    if (
-      choice === "archive"
-    ) {
-
-      await archiveProduct(
-        id,
-        productName
-      );
-
-      return;
-    }
-
-
-    if (
-      choice === "delete"
-    ) {
-
-      await permanentDeleteProduct(
-        id,
-        productName,
-        orderCount
-      );
-    }
-
-  } catch (error) {
-
-    console.error(error);
-
-
-    alert(
-      `Unable to manage product:\n${error.message}`
-    );
-  }
-
 }
 
 
@@ -1651,26 +1443,20 @@ function resetImagePreview() {
   }
 
 
-  if (productImageFileName) {
-
-    productImageFileName.textContent =
-      "Current image";
-  }
-
-
   if (productImagePreview) {
 
-    productImagePreview.classList.add(
-      "hidden"
-    );
+    productImagePreview
+      .classList.add(
+        "hidden"
+      );
   }
-
 }
 
 
 function showImagePreview(
   url,
-  fileName = "Current image"
+  fileName =
+    "Current image"
 ) {
 
   if (!url) {
@@ -1681,27 +1467,16 @@ function showImagePreview(
   }
 
 
-  if (productImagePreviewImg) {
+  productImagePreviewImg.src =
+    url;
 
-    productImagePreviewImg.src =
-      url;
-  }
+  productImageFileName.textContent =
+    fileName;
 
-
-  if (productImageFileName) {
-
-    productImageFileName.textContent =
-      fileName;
-  }
-
-
-  if (productImagePreview) {
-
-    productImagePreview.classList.remove(
+  productImagePreview
+    .classList.remove(
       "hidden"
     );
-  }
-
 }
 
 
@@ -1741,17 +1516,14 @@ function openCreateModal() {
   productMessage.textContent =
     "";
 
-  productMessage.style.color =
-    "";
-
 
   resetImagePreview();
 
 
-  productModal.classList.remove(
-    "hidden"
-  );
-
+  productModal
+    .classList.remove(
+      "hidden"
+    );
 }
 
 
@@ -1800,19 +1572,11 @@ function openEditModal(
     "";
 
 
-  const category =
-    String(
-      product.category ||
-      "toy"
-    ).toLowerCase();
-
-
   document.getElementById(
     "category"
   ).value =
-    category === "game"
-      ? "game"
-      : "toy";
+    product.category ||
+    "toy";
 
 
   document.getElementById(
@@ -1848,25 +1612,17 @@ function openEditModal(
     "";
 
 
-  productImageInput.value =
-    "";
-
-
   if (
     product.thumbnail_url
   ) {
 
     showImagePreview(
-      product.thumbnail_url,
-      "Current product image"
+      product.thumbnail_url
     );
 
   } else {
 
-    productImagePreview
-      .classList.add(
-        "hidden"
-      );
+    resetImagePreview();
   }
 
 
@@ -1874,49 +1630,24 @@ function openEditModal(
     "Save Changes";
 
 
-  productMessage.textContent =
-    "";
-
-  productMessage.style.color =
-    "";
-
-
-  productModal.classList.remove(
-    "hidden"
-  );
-
+  productModal
+    .classList.remove(
+      "hidden"
+    );
 }
 
 
 function closeModal() {
 
-  productModal.classList.add(
-    "hidden"
-  );
+  productModal
+    .classList.add(
+      "hidden"
+    );
 
 
   productForm.reset();
 
-
-  document.getElementById(
-    "editingProductId"
-  ).value =
-    "";
-
-
-  saveProductButton.textContent =
-    "Create Product";
-
-
-  productMessage.textContent =
-    "";
-
-  productMessage.style.color =
-    "";
-
-
   resetImagePreview();
-
 }
 
 
@@ -1924,20 +1655,14 @@ function getFileExtension(
   file
 ) {
 
-  const fileName =
+  const extension =
     String(
       file.name ||
       ""
-    );
-
-
-  const extension =
-    fileName.includes(".")
-      ? fileName
-          .split(".")
-          .pop()
-          .toLowerCase()
-      : "";
+    )
+      .split(".")
+      .pop()
+      .toLowerCase();
 
 
   if (
@@ -1952,24 +1677,6 @@ function getFileExtension(
   ) {
 
     return extension;
-  }
-
-
-  if (
-    file.type ===
-    "image/png"
-  ) {
-
-    return "png";
-  }
-
-
-  if (
-    file.type ===
-    "image/webp"
-  ) {
-
-    return "webp";
   }
 
 
@@ -1989,43 +1696,13 @@ async function uploadProductImage(
   }
 
 
-  const allowedTypes = [
-    "image/jpeg",
-    "image/png",
-    "image/webp"
-  ];
-
-
-  if (
-    !allowedTypes.includes(
-      file.type
-    )
-  ) {
-
-    throw new Error(
-      "Use a JPG, PNG, or WEBP image."
-    );
-  }
-
-
-  if (
-    file.size >
-    5 * 1024 * 1024
-  ) {
-
-    throw new Error(
-      "Product image must stay below 5 MB."
-    );
-  }
-
-
   const extension =
     getFileExtension(
       file
     );
 
 
-  const uniqueId =
+  const id =
     typeof crypto.randomUUID ===
     "function"
       ? crypto.randomUUID()
@@ -2035,11 +1712,11 @@ async function uploadProductImage(
 
 
   const filePath =
-    `${currentUser.id}/${Date.now()}-${uniqueId}.${extension}`;
+    `${currentUser.id}/${Date.now()}-${id}.${extension}`;
 
 
   const {
-    error: uploadError
+    error
   } =
     await supabase.storage
       .from(
@@ -2047,28 +1724,18 @@ async function uploadProductImage(
       )
       .upload(
         filePath,
-        file,
-        {
-          cacheControl:
-            "3600",
-
-          upsert:
-            false,
-
-          contentType:
-            file.type
-        }
+        file
       );
 
 
-  if (uploadError) {
+  if (error) {
 
-    throw uploadError;
+    throw error;
   }
 
 
   const {
-    data: publicData
+    data
   } =
     supabase.storage
       .from(
@@ -2079,19 +1746,7 @@ async function uploadProductImage(
       );
 
 
-  const publicUrl =
-    publicData?.publicUrl;
-
-
-  if (!publicUrl) {
-
-    throw new Error(
-      "Product image URL was not generated."
-    );
-  }
-
-
-  return publicUrl;
+  return data.publicUrl;
 }
 
 
@@ -2108,19 +1763,6 @@ async function saveProduct(
     ).value;
 
 
-  productMessage.style.color =
-    "";
-
-
-  productMessage.textContent =
-    productImageInput
-      .files?.[0]
-      ? "Uploading image..."
-      : editingId
-        ? "Saving changes..."
-        : "Creating product...";
-
-
   saveProductButton.disabled =
     true;
 
@@ -2128,109 +1770,86 @@ async function saveProduct(
   try {
 
     let imageUrl =
-      thumbnailUrlInput
-        .value
-        .trim();
+      thumbnailUrlInput.value;
 
 
-    const imageFile =
+    const file =
       productImageInput
         .files?.[0];
 
 
-    if (imageFile) {
+    if (file) {
 
       imageUrl =
         await uploadProductImage(
-          imageFile
+          file
         );
     }
+
+
+    const status =
+      document.getElementById(
+        "productStatus"
+      ).value;
 
 
     const productData = {
 
       name:
-        document
-          .getElementById(
-            "productName"
-          )
-          .value
-          .trim(),
+        document.getElementById(
+          "productName"
+        ).value.trim(),
 
       limited_id:
-        document
-          .getElementById(
-            "limitedId"
-          )
-          .value
-          .trim(),
+        document.getElementById(
+          "limitedId"
+        ).value.trim(),
 
       description:
-        document
-          .getElementById(
-            "description"
-          )
-          .value
-          .trim(),
+        document.getElementById(
+          "description"
+        ).value.trim(),
 
       price:
         Number(
-          document
-            .getElementById(
-              "price"
-            )
-            .value
+          document.getElementById(
+            "price"
+          ).value
         ),
 
       stock:
         Number(
-          document
-            .getElementById(
-              "stock"
-            )
-            .value
+          document.getElementById(
+            "stock"
+          ).value
         ),
 
       category:
-        document
-          .getElementById(
-            "category"
-          )
-          .value,
+        document.getElementById(
+          "category"
+        ).value,
 
       seller_name:
-        document
-          .getElementById(
-            "sellerName"
-          )
-          .value
-          .trim(),
+        document.getElementById(
+          "sellerName"
+        ).value.trim(),
 
       thumbnail_url:
         imageUrl,
 
       item_url:
-        document
-          .getElementById(
-            "itemUrl"
-          )
-          .value
-          .trim(),
+        document.getElementById(
+          "itemUrl"
+        ).value.trim(),
 
-      status:
-        document
-          .getElementById(
-            "productStatus"
-          )
-          .value,
+      status,
 
       is_hot:
-        document
-          .getElementById(
-            "isHot"
-          )
-          .checked
-
+        status === "archived"
+          ? false
+          : document.getElementById(
+              "isHot"
+            ).checked
     };
 
 
@@ -2267,48 +1886,32 @@ async function saveProduct(
     }
 
 
-    productMessage.style.color =
-      "#7cff9b";
+    await loadProducts();
 
 
     productMessage.textContent =
       editingId
-        ? "Product updated successfully."
-        : "Product created successfully.";
-
-
-    await Promise.all([
-      loadProducts(),
-      loadStats()
-    ]);
+        ? "Product updated."
+        : "Product created.";
 
 
     setTimeout(
       closeModal,
-      650
+      500
     );
 
   } catch (error) {
 
-    console.error(
-      error
-    );
-
-
-    productMessage.style.color =
-      "#ff8f8f";
-
+    console.error(error);
 
     productMessage.textContent =
-      error.message ||
-      "Unable to save product.";
+      error.message;
 
   } finally {
 
     saveProductButton.disabled =
       false;
   }
-
 }
 
 
@@ -2324,6 +1927,11 @@ function setupNavigation() {
       "productsNav"
     );
 
+  const archiveNav =
+    document.getElementById(
+      "archiveNav"
+    );
+
   const customersNav =
     document.getElementById(
       "customersNav"
@@ -2335,130 +1943,117 @@ function setupNavigation() {
     );
 
 
-  if (dashboardNav) {
+  dashboardNav.addEventListener(
+    "click",
+    () => {
 
-    dashboardNav.addEventListener(
-      "click",
-      () => {
+      showSection(
+        dashboardSection,
+        "Dashboard",
+        dashboardNav
+      );
 
-        showSection(
-          dashboardSection,
-          "Dashboard",
-          dashboardNav
-        );
-
-      }
-    );
-  }
+    }
+  );
 
 
-  if (productsNav) {
+  productsNav.addEventListener(
+    "click",
+    () => {
 
-    productsNav.addEventListener(
-      "click",
-      () => {
+      showSection(
+        productsSection,
+        "Products",
+        productsNav
+      );
 
-        showSection(
-          productsSection,
-          "Products",
-          productsNav
-        );
-
-      }
-    );
-  }
+    }
+  );
 
 
-  if (customersNav) {
+  archiveNav.addEventListener(
+    "click",
+    () => {
 
-    customersNav.addEventListener(
-      "click",
-      async () => {
-
-        showSection(
-          customersSection,
-          "Customers",
-          customersNav
-        );
+      showSection(
+        archiveSection,
+        "Archive",
+        archiveNav
+      );
 
 
-        await loadCustomers();
+      renderArchive();
 
-      }
-    );
-  }
+    }
+  );
 
 
-  if (settingsNav) {
+  customersNav.addEventListener(
+    "click",
+    async () => {
 
-    settingsNav.addEventListener(
-      "click",
-      () => {
+      showSection(
+        customersSection,
+        "Customers",
+        customersNav
+      );
 
-        showSection(
-          settingsSection,
-          "Settings",
-          settingsNav
-        );
 
-      }
-    );
-  }
+      await loadCustomers();
 
+    }
+  );
+
+
+  settingsNav.addEventListener(
+    "click",
+    () => {
+
+      showSection(
+        settingsSection,
+        "Settings",
+        settingsNav
+      );
+
+    }
+  );
 }
 
 
 function setupImageUpload() {
 
-  if (productImageInput) {
+  productImageInput
+    .addEventListener(
+      "change",
+      () => {
 
-    productImageInput
-      .addEventListener(
-        "change",
-        () => {
-
-          const file =
-            productImageInput
-              .files?.[0];
+        const file =
+          productImageInput
+            .files?.[0];
 
 
-          if (!file) {
+        if (!file) {
 
-            return;
-          }
-
-
-          const previewUrl =
-            URL.createObjectURL(
-              file
-            );
-
-
-          showImagePreview(
-            previewUrl,
-            file.name
-          );
-
+          return;
         }
-      );
-  }
 
 
-  if (
-    removeProductImageButton
-  ) {
+        showImagePreview(
+          URL.createObjectURL(
+            file
+          ),
+          file.name
+        );
 
-    removeProductImageButton
-      .addEventListener(
-        "click",
-        () => {
+      }
+    );
 
-          resetImagePreview();
 
-        }
-      );
-  }
-
+  removeProductImageButton
+    .addEventListener(
+      "click",
+      resetImagePreview
+    );
 }
 
 
@@ -2479,136 +2074,79 @@ async function start() {
   setupImageUpload();
 
 
-  const createProductButton =
-    document.getElementById(
-      "createProductButton"
-    );
-
-  const createProductButtonSecondary =
-    document.getElementById(
-      "createProductButtonSecondary"
-    );
-
-  const productsCreateButton =
-    document.getElementById(
-      "productsCreateButton"
-    );
-
-  const closeModalButton =
-    document.getElementById(
-      "closeModalButton"
-    );
-
-  const cancelProductButton =
-    document.getElementById(
-      "cancelProductButton"
-    );
-
-  const modalOverlay =
-    document.getElementById(
-      "modalOverlay"
-    );
-
-  const logoutButton =
-    document.getElementById(
-      "logoutButton"
-    );
+  document.getElementById(
+    "createProductButton"
+  ).addEventListener(
+    "click",
+    openCreateModal
+  );
 
 
-  if (createProductButton) {
-
-    createProductButton
-      .addEventListener(
-        "click",
-        openCreateModal
-      );
-  }
+  document.getElementById(
+    "createProductButtonSecondary"
+  ).addEventListener(
+    "click",
+    openCreateModal
+  );
 
 
-  if (
-    createProductButtonSecondary
-  ) {
-
-    createProductButtonSecondary
-      .addEventListener(
-        "click",
-        openCreateModal
-      );
-  }
+  document.getElementById(
+    "productsCreateButton"
+  ).addEventListener(
+    "click",
+    openCreateModal
+  );
 
 
-  if (productsCreateButton) {
-
-    productsCreateButton
-      .addEventListener(
-        "click",
-        openCreateModal
-      );
-  }
+  document.getElementById(
+    "closeModalButton"
+  ).addEventListener(
+    "click",
+    closeModal
+  );
 
 
-  if (closeModalButton) {
-
-    closeModalButton
-      .addEventListener(
-        "click",
-        closeModal
-      );
-  }
+  document.getElementById(
+    "cancelProductButton"
+  ).addEventListener(
+    "click",
+    closeModal
+  );
 
 
-  if (cancelProductButton) {
-
-    cancelProductButton
-      .addEventListener(
-        "click",
-        closeModal
-      );
-  }
+  document.getElementById(
+    "modalOverlay"
+  ).addEventListener(
+    "click",
+    closeModal
+  );
 
 
-  if (modalOverlay) {
-
-    modalOverlay
-      .addEventListener(
-        "click",
-        closeModal
-      );
-  }
+  productForm.addEventListener(
+    "submit",
+    saveProduct
+  );
 
 
-  if (productForm) {
+  document.getElementById(
+    "logoutButton"
+  ).addEventListener(
+    "click",
+    async () => {
 
-    productForm
-      .addEventListener(
-        "submit",
-        saveProduct
-      );
-  }
+      await supabase.auth.signOut();
 
+      window.location.href =
+        "./login.html";
 
-  if (logoutButton) {
-
-    logoutButton
-      .addEventListener(
-        "click",
-        async () => {
-
-          await supabase.auth.signOut();
-
-          window.location.href =
-            "./login.html";
-
-        }
-      );
-  }
+    }
+  );
 
 
   await Promise.all([
     loadProducts(),
     loadStats()
   ]);
-
 }
 
 
