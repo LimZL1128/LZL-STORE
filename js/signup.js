@@ -65,7 +65,7 @@ signupForm.addEventListener(
 
     setTimeout(() => {
       window.location.href =
-        "./store.html";
+        "/LZL-STORE/html/store.html";
     }, 800);
 
   }
