@@ -3272,3 +3272,19 @@ a {
     min-width: 68px !important;
   }
 }
+
+.store-logo-image {
+  width: 58px;
+  height: 58px;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .store-logo-image {
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+  }
+}
