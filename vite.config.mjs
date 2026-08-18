@@ -19,6 +19,11 @@ export default defineConfig({
           "html/login.html"
         ),
 
+        signup: resolve(
+          import.meta.dirname,
+          "html/signup.html"
+        ),
+
         admin: resolve(
           import.meta.dirname,
           "html/admin.html"

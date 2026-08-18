@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>LZL Store | Sign Up</title>
+
+  <link
+    rel="stylesheet"
+    href="../css/login.css"
+  >
+</head>
+
+<body>
+
+  <main class="auth-page">
+
+    <section class="auth-card">
+
+      <div class="auth-brand">
+        <h1>LZL</h1>
+        <span>STORE</span>
+      </div>
+
+      <h2>Create Account</h2>
+
+      <p>
+        Create your LZL Store customer account.
+      </p>
+
+      <form id="signupForm">
+
+        <div class="form-group">
+
+          <label for="signupEmail">
+            Email
+          </label>
+
+          <input
+            id="signupEmail"
+            type="email"
+            required
+            autocomplete="email"
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="signupPassword">
+            Password
+          </label>
+
+          <input
+            id="signupPassword"
+            type="password"
+            minlength="6"
+            required
+            autocomplete="new-password"
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="confirmPassword">
+            Confirm Password
+          </label>
+
+          <input
+            id="confirmPassword"
+            type="password"
+            minlength="6"
+            required
+            autocomplete="new-password"
+          >
+
+        </div>
+
+        <button
+          type="submit"
+          class="auth-button"
+        >
+          Create Account
+        </button>
+
+        <p
+          id="signupMessage"
+          class="auth-message"
+        ></p>
+
+      </form>
+
+      <p class="auth-switch">
+        Already have an account?
+
+        <a href="./login.html">
+          Sign In
+        </a>
+      </p>
+
+    </section>
+
+  </main>
+
+  <script
+    type="module"
+    src="../js/signup.js"
+  ></script>
+
+</body>
+
+</html>
