@@ -406,8 +406,7 @@ button:disabled {
 
 .create-button,
 #createProductButtonSecondary,
-#productsCreateButton,
-#emptyCreateButton {
+#productsCreateButton {
   position: relative;
 
   min-width: 146px;
@@ -465,8 +464,7 @@ button:disabled {
 
 .create-button:hover,
 #createProductButtonSecondary:hover,
-#productsCreateButton:hover,
-#emptyCreateButton:hover {
+#productsCreateButton:hover:hover {
   transform:
     translateY(-2px);
 
@@ -496,8 +494,7 @@ button:disabled {
 
 .create-button:active,
 #createProductButtonSecondary:active,
-#productsCreateButton:active,
-#emptyCreateButton:active {
+#productsCreateButton:active:active {
   transform:
     translateY(0);
 }
