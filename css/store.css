@@ -3161,3 +3161,82 @@ a {
     0 8px 20px
     rgba(0, 0, 0, 0.28);
 }
+
+@media (max-width: 450px) {
+
+  #accountButton {
+    display: inline-flex !important;
+
+    min-width: 64px;
+    height: 37px;
+
+    padding: 0 8px;
+
+    font-size: 8px;
+  }
+
+  .header-actions {
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 4px;
+  }
+
+  .header-button {
+    min-width: 60px;
+    height: 37px;
+
+    padding: 0 7px;
+
+    font-size: 8px;
+  }
+
+  .search-button {
+    min-width: 38px;
+    width: 38px;
+
+    padding: 0;
+  }
+
+  .cart-button {
+    min-width: 62px;
+  }
+
+  .store-header {
+    grid-template-columns: auto 1fr;
+
+    gap: 8px;
+
+    padding: 10px 10px;
+  }
+
+  .store-logo h1 {
+    font-size: 21px;
+  }
+
+  .store-nav {
+    width: 100%;
+
+    overflow-x: auto;
+
+    justify-content: flex-start;
+  }
+
+  .store-nav-button {
+    min-width: 62px;
+
+    padding: 0 8px;
+
+    flex-shrink: 0;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-category-row {
+    grid-template-columns: 1fr;
+  }
+}
