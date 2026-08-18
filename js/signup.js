@@ -32,7 +32,6 @@ signupForm.addEventListener(
         .value;
 
     if (password !== confirmPassword) {
-
       signupMessage.textContent =
         "Passwords do not match.";
 
@@ -48,39 +47,15 @@ signupForm.addEventListener(
     });
 
     if (error) {
-
       signupMessage.textContent =
         error.message;
 
       return;
     }
 
-    const user =
-      data.user;
-
-    if (!user) {
-
+    if (!data.session) {
       signupMessage.textContent =
         "Account created. Check your email to confirm your account.";
-
-      return;
-    }
-
-    const {
-      error: profileError
-    } = await supabase
-      .from("profiles")
-      .upsert({
-        id: user.id,
-        role: "customer"
-      });
-
-    if (profileError) {
-
-      console.error(profileError);
-
-      signupMessage.textContent =
-        "Account created, but profile setup failed.";
 
       return;
     }
@@ -89,10 +64,8 @@ signupForm.addEventListener(
       "Account created successfully.";
 
     setTimeout(() => {
-
       window.location.href =
         "./store.html";
-
     }, 800);
 
   }
