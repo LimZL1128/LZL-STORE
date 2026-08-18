@@ -2948,3 +2948,47 @@ input:checked
     grid-template-columns: 1fr;
   }
 }
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-logo-image {
+  width: 46px;
+  height: 46px;
+
+  object-fit: cover;
+
+  border-radius: 11px;
+
+  box-shadow:
+    0 0 18px
+    rgba(150, 85, 255, 0.22);
+}
+
+.admin-logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-logo-text strong {
+  color: #ffffff;
+
+  font-size: 20px;
+  font-weight: 950;
+
+  line-height: 1;
+}
+
+.admin-logo-text span {
+  margin-top: 5px;
+
+  color: #8f84a3;
+
+  font-size: 7px;
+  font-weight: 900;
+
+  letter-spacing: 1.5px;
+}

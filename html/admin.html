@@ -24,8 +24,18 @@
     <aside class="sidebar">
 
       <div class="sidebar-brand">
-        <h1>LZL</h1>
-        <span>STORE ADMIN</span>
+
+        <img
+          src="../assets/logo.png"
+          alt="LZL Store"
+          class="admin-logo-image"
+        >
+
+        <div class="admin-logo-text">
+          <strong>LZL</strong>
+          <span>STORE ADMIN</span>
+        </div>
+
       </div>
 
 
@@ -39,6 +49,7 @@
           Dashboard
         </button>
 
+
         <button
           id="productsNav"
           class="nav-item"
@@ -47,14 +58,19 @@
           Products
         </button>
 
+
         <button
           id="archiveNav"
           class="nav-item"
           type="button"
         >
-          Archive
-          <span id="archiveCountBadge">0</span>
+          <span>Archive</span>
+
+          <span id="archiveCountBadge">
+            0
+          </span>
         </button>
+
 
         <a
           href="./admin-orders.html"
@@ -63,6 +79,7 @@
           Orders
         </a>
 
+
         <button
           id="customersNav"
           class="nav-item"
@@ -70,6 +87,7 @@
         >
           Customers
         </button>
+
 
         <button
           id="settingsNav"
@@ -131,67 +149,34 @@
           <div class="stats-grid">
 
             <div class="stat-card">
-
-              <span>
-                Total Products
-              </span>
-
-              <strong id="productCount">
-                0
-              </strong>
-
+              <span>Total Products</span>
+              <strong id="productCount">0</strong>
             </div>
 
 
             <div class="stat-card">
-
-              <span>
-                Archived
-              </span>
-
-              <strong id="archivedCount">
-                0
-              </strong>
-
+              <span>Archived</span>
+              <strong id="archivedCount">0</strong>
             </div>
 
 
             <div class="stat-card">
-
-              <span>
-                Orders
-              </span>
-
-              <strong id="orderCount">
-                0
-              </strong>
-
+              <span>Orders</span>
+              <strong id="orderCount">0</strong>
             </div>
 
 
             <div class="stat-card">
-
-              <span>
-                Customers
-              </span>
-
-              <strong id="customerCount">
-                0
-              </strong>
-
+              <span>Customers</span>
+              <strong id="customerCount">0</strong>
             </div>
 
 
             <div class="stat-card">
-
-              <span>
-                Revenue
-              </span>
-
+              <span>Revenue</span>
               <strong id="revenueCount">
                 RM 0.00
               </strong>
-
             </div>
 
           </div>
@@ -509,6 +494,7 @@
           id="closeModalButton"
           class="close-button"
           type="button"
+          aria-label="Close"
         >
           ×
         </button>
@@ -683,6 +669,7 @@
               Hot Product
             </label>
 
+
             <label
               for="isHot"
               class="hot-toggle-card"
@@ -693,8 +680,10 @@
                 type="checkbox"
               >
 
+
               <span class="hot-toggle-switch">
               </span>
+
 
               <span class="hot-toggle-copy">
 
@@ -703,7 +692,7 @@
                 </strong>
 
                 <small>
-                  Turn this on to show this listing in Hot.
+                  Show this listing in Hot.
                 </small>
 
               </span>
@@ -729,6 +718,7 @@
                 accept="image/jpeg,image/png,image/webp"
               >
 
+
               <input
                 id="thumbnailUrl"
                 type="hidden"
@@ -744,6 +734,7 @@
                 <span class="upload-icon">
                   +
                 </span>
+
 
                 <span class="upload-copy">
 
@@ -777,6 +768,7 @@
                   <strong id="productImageFileName">
                     Current image
                   </strong>
+
 
                   <button
                     id="removeProductImageButton"
@@ -827,6 +819,7 @@
           >
             Cancel
           </button>
+
 
           <button
             id="saveProductButton"
