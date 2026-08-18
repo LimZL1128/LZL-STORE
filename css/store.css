@@ -3358,3 +3358,88 @@ a {
     letter-spacing: 2px;
   }
 }
+
+.store-logo {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+
+  flex-shrink: 0 !important;
+
+  text-decoration: none !important;
+}
+
+.store-logo-image {
+  width: 52px !important;
+  height: 52px !important;
+
+  display: block !important;
+
+  object-fit: cover;
+
+  border-radius: 12px;
+}
+
+.store-logo-text {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+
+  min-width: 58px !important;
+
+  line-height: 1 !important;
+}
+
+.logo-lzl {
+  display: block !important;
+
+  color: #ffffff !important;
+
+  font-size: 21px !important;
+  font-weight: 950 !important;
+
+  letter-spacing: 1px !important;
+}
+
+.logo-store {
+  display: block !important;
+
+  margin-top: 5px !important;
+
+  color: #a98bff !important;
+
+  font-size: 8px !important;
+  font-weight: 900 !important;
+
+  letter-spacing: 3px !important;
+}
+
+@media (max-width: 600px) {
+
+  .store-logo {
+    gap: 6px !important;
+  }
+
+  .store-logo-image {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .store-logo-text {
+    min-width: 46px !important;
+  }
+
+  .logo-lzl {
+    font-size: 16px !important;
+  }
+
+  .logo-store {
+    display: block !important;
+
+    margin-top: 3px !important;
+
+    font-size: 6px !important;
+
+    letter-spacing: 2px !important;
+  }
+}
