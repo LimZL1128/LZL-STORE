@@ -63,7 +63,6 @@ const removeProductImageButton =
 
 
 function escapeHTML(value) {
-
   return String(value ?? "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
@@ -579,7 +578,7 @@ function getProductCardHTML(
         </div>
 
 
-        <div class="product-actions">
+        <div class="product-actions product-actions-three">
 
           <button
             class="edit-product"
@@ -590,6 +589,18 @@ function getProductCardHTML(
           >
             Edit
           </button>
+
+
+          <button
+            class="archive-product"
+            data-id="${escapeHTML(
+              product.id
+            )}"
+            type="button"
+          >
+            Archive
+          </button>
+
 
           <button
             class="delete-product"
@@ -764,7 +775,9 @@ function renderArchive() {
           <article class="product-card">
 
             <div class="product-image">
+
               ${imageHTML}
+
             </div>
 
 
@@ -911,6 +924,26 @@ function bindProductButtons() {
 
   document
     .querySelectorAll(
+      ".archive-product"
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          archiveProduct(
+            button.dataset.id
+          );
+
+        }
+      );
+
+    });
+
+
+  document
+    .querySelectorAll(
       ".delete-product"
     )
     .forEach(button => {
@@ -919,7 +952,7 @@ function bindProductButtons() {
         "click",
         () => {
 
-          deleteProduct(
+          openDeleteProductModal(
             button.dataset.id
           );
 
@@ -962,7 +995,7 @@ function bindArchiveButtons() {
         "click",
         () => {
 
-          deleteArchivedProduct(
+          openDeleteProductModal(
             button.dataset.id
           );
 
@@ -991,18 +1024,6 @@ async function restoreProduct(
   }
 
 
-  const confirmed =
-    confirm(
-      `Restore "${product.name}" to the store?`
-    );
-
-
-  if (!confirmed) {
-
-    return;
-  }
-
-
   const {
     error
   } =
@@ -1019,7 +1040,8 @@ async function restoreProduct(
 
   if (error) {
 
-    alert(
+    showActionMessage(
+      "Restore Failed",
       error.message
     );
 
@@ -1030,8 +1052,63 @@ async function restoreProduct(
   await loadProducts();
 
 
-  alert(
-    `"${product.name}" restored.`
+  showActionMessage(
+    "Listing Restored",
+    `"${product.name}" is active again.`
+  );
+}
+
+
+async function archiveProduct(
+  id
+) {
+
+  const product =
+    products.find(
+      item =>
+        String(item.id) ===
+        String(id)
+    );
+
+
+  if (!product) {
+
+    return;
+  }
+
+
+  const {
+    error
+  } =
+    await supabase
+      .from("products")
+      .update({
+        status: "archived",
+        is_hot: false
+      })
+      .eq(
+        "id",
+        id
+      );
+
+
+  if (error) {
+
+    showActionMessage(
+      "Archive Failed",
+      error.message
+    );
+
+    return;
+  }
+
+
+  await loadProducts();
+
+
+  showActionMessage(
+    "Listing Archived",
+    `"${product.name}" moved to Archive.`
   );
 }
 
@@ -1074,7 +1151,7 @@ async function getProductOrderCount(
 }
 
 
-async function archiveProduct(
+async function openDeleteProductModal(
   id
 ) {
 
@@ -1092,91 +1169,240 @@ async function archiveProduct(
   }
 
 
-  const {
-    error
-  } =
-    await supabase
-      .from("products")
-      .update({
-        status: "archived",
-        is_hot: false
-      })
-      .eq(
-        "id",
+  let orderCount = 0;
+
+
+  try {
+
+    orderCount =
+      await getProductOrderCount(
         id
       );
 
+  } catch (error) {
 
-  if (error) {
+    showActionMessage(
+      "Unable To Check Orders",
+      error.message
+    );
 
-    throw error;
+    return;
   }
 
 
-  await loadProducts();
+  const oldModal =
+    document.getElementById(
+      "customDeleteModal"
+    );
 
 
-  alert(
-    `"${product.name}" archived.`
+  if (oldModal) {
+
+    oldModal.remove();
+  }
+
+
+  const overlay =
+    document.createElement(
+      "div"
+    );
+
+
+  overlay.id =
+    "customDeleteModal";
+
+  overlay.className =
+    "custom-delete-overlay";
+
+
+  overlay.innerHTML = `
+    <div class="custom-delete-card">
+
+      <div class="delete-warning-icon">
+        !
+      </div>
+
+
+      <p class="delete-eyebrow">
+        PERMANENT DELETE
+      </p>
+
+
+      <h2>
+        Delete Listing?
+      </h2>
+
+
+      <p class="delete-product-name">
+        ${escapeHTML(
+          product.name
+        )}
+      </p>
+
+
+      ${
+        orderCount > 0
+          ? `
+            <div class="delete-order-warning">
+
+              This listing is linked to
+              <strong>
+                ${orderCount}
+              </strong>
+              order${orderCount === 1 ? "" : "s"}.
+
+              <br><br>
+
+              Permanent deletion will also remove its linked order item records.
+
+            </div>
+          `
+          : `
+            <p class="delete-description">
+
+              This listing will be permanently removed from LZL Store.
+
+            </p>
+          `
+      }
+
+
+      <p class="delete-final-warning">
+        This action cannot be reversed.
+      </p>
+
+
+      <div class="custom-delete-actions">
+
+        <button
+          id="cancelPermanentDelete"
+          class="custom-delete-cancel"
+          type="button"
+        >
+          Cancel
+        </button>
+
+
+        <button
+          id="confirmPermanentDelete"
+          class="custom-delete-confirm"
+          type="button"
+        >
+          Delete Permanently
+        </button>
+
+      </div>
+
+    </div>
+  `;
+
+
+  document.body.appendChild(
+    overlay
   );
+
+
+  const closeDeleteModal =
+    () => {
+
+      overlay.remove();
+    };
+
+
+  overlay
+    .querySelector(
+      "#cancelPermanentDelete"
+    )
+    .addEventListener(
+      "click",
+      closeDeleteModal
+    );
+
+
+  overlay.addEventListener(
+    "click",
+    event => {
+
+      if (
+        event.target ===
+        overlay
+      ) {
+
+        closeDeleteModal();
+      }
+
+    }
+  );
+
+
+  overlay
+    .querySelector(
+      "#confirmPermanentDelete"
+    )
+    .addEventListener(
+      "click",
+      async () => {
+
+        const deleteButton =
+          overlay.querySelector(
+            "#confirmPermanentDelete"
+          );
+
+
+        deleteButton.disabled =
+          true;
+
+        deleteButton.textContent =
+          "Deleting...";
+
+
+        try {
+
+          await permanentlyDelete(
+            id,
+            orderCount
+          );
+
+
+          closeDeleteModal();
+
+
+          showActionMessage(
+            "Listing Deleted",
+            `"${product.name}" was permanently deleted.`
+          );
+
+        } catch (error) {
+
+          console.error(error);
+
+
+          deleteButton.disabled =
+            false;
+
+          deleteButton.textContent =
+            "Delete Permanently";
+
+
+          showActionMessage(
+            "Delete Failed",
+            error.message
+          );
+        }
+
+      }
+    );
 }
 
 
 async function permanentlyDelete(
-  id
+  id,
+  orderCount
 ) {
 
-  const product =
-    products.find(
-      item =>
-        String(item.id) ===
-        String(id)
-    );
-
-
-  if (!product) {
-
-    return;
-  }
-
-
-  const orderCount =
-    await getProductOrderCount(
-      id
-    );
-
-
-  let message =
-    `Permanently delete "${product.name}"?`;
-
-
-  if (orderCount > 0) {
-
-    message +=
-      `\n\nThis listing is connected to ${orderCount} order${orderCount === 1 ? "" : "s"}.`;
-
-    message +=
-      "\nLinked order item records will also be deleted.";
-  }
-
-
-  message +=
-    "\n\nThis action cannot be reversed.";
-
-
-  const confirmed =
-    confirm(
-      message
-    );
-
-
-  if (!confirmed) {
-
-    return;
-  }
-
-
-  if (orderCount > 0) {
+  if (
+    orderCount > 0
+  ) {
 
     const {
       error:
@@ -1217,104 +1443,90 @@ async function permanentlyDelete(
 
 
   await loadProducts();
+}
 
 
-  alert(
-    `"${product.name}" permanently deleted.`
+function showActionMessage(
+  title,
+  message
+) {
+
+  const previous =
+    document.getElementById(
+      "adminActionToast"
+    );
+
+
+  if (previous) {
+
+    previous.remove();
+  }
+
+
+  const toast =
+    document.createElement(
+      "div"
+    );
+
+
+  toast.id =
+    "adminActionToast";
+
+  toast.className =
+    "admin-action-toast";
+
+
+  toast.innerHTML = `
+    <strong>
+      ${escapeHTML(
+        title
+      )}
+    </strong>
+
+    <span>
+      ${escapeHTML(
+        message
+      )}
+    </span>
+  `;
+
+
+  document.body.appendChild(
+    toast
   );
-}
 
 
-async function deleteProduct(
-  id
-) {
+  requestAnimationFrame(
+    () => {
 
-  const product =
-    products.find(
-      item =>
-        String(item.id) ===
-        String(id)
-    );
-
-
-  if (!product) {
-
-    return;
-  }
-
-
-  const choice =
-    prompt(
-      `Manage "${product.name}"\n\nType:\nARCHIVE to archive listing\nDELETE to permanently delete\nCANCEL to cancel`
-    );
-
-
-  if (!choice) {
-
-    return;
-  }
-
-
-  const action =
-    choice
-      .trim()
-      .toUpperCase();
-
-
-  try {
-
-    if (
-      action === "ARCHIVE"
-    ) {
-
-      await archiveProduct(
-        id
+      toast.classList.add(
+        "show"
       );
 
-      return;
     }
+  );
 
 
-    if (
-      action === "DELETE"
-    ) {
+  setTimeout(
+    () => {
 
-      await permanentlyDelete(
-        id
+      toast.classList.remove(
+        "show"
       );
 
-      return;
-    }
 
-  } catch (error) {
+      setTimeout(
+        () => {
 
-    console.error(error);
+          toast.remove();
 
-    alert(
-      error.message
-    );
-  }
-}
+        },
+        250
+      );
 
-
-async function deleteArchivedProduct(
-  id
-) {
-
-  try {
-
-    await permanentlyDelete(
-      id
-    );
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert(
-      error.message
-    );
-  }
+    },
+    2200
+  );
 }
 
 
@@ -1796,60 +2008,83 @@ async function saveProduct(
     const productData = {
 
       name:
-        document.getElementById(
-          "productName"
-        ).value.trim(),
+        document
+          .getElementById(
+            "productName"
+          )
+          .value
+          .trim(),
 
       limited_id:
-        document.getElementById(
-          "limitedId"
-        ).value.trim(),
+        document
+          .getElementById(
+            "limitedId"
+          )
+          .value
+          .trim(),
 
       description:
-        document.getElementById(
-          "description"
-        ).value.trim(),
+        document
+          .getElementById(
+            "description"
+          )
+          .value
+          .trim(),
 
       price:
         Number(
-          document.getElementById(
-            "price"
-          ).value
+          document
+            .getElementById(
+              "price"
+            )
+            .value
         ),
 
       stock:
         Number(
-          document.getElementById(
-            "stock"
-          ).value
+          document
+            .getElementById(
+              "stock"
+            )
+            .value
         ),
 
       category:
-        document.getElementById(
-          "category"
-        ).value,
+        document
+          .getElementById(
+            "category"
+          )
+          .value,
 
       seller_name:
-        document.getElementById(
-          "sellerName"
-        ).value.trim(),
+        document
+          .getElementById(
+            "sellerName"
+          )
+          .value
+          .trim(),
 
       thumbnail_url:
         imageUrl,
 
       item_url:
-        document.getElementById(
-          "itemUrl"
-        ).value.trim(),
+        document
+          .getElementById(
+            "itemUrl"
+          )
+          .value
+          .trim(),
 
       status,
 
       is_hot:
         status === "archived"
           ? false
-          : document.getElementById(
-              "isHot"
-            ).checked
+          : document
+              .getElementById(
+                "isHot"
+              )
+              .checked
     };
 
 
@@ -2074,52 +2309,64 @@ async function start() {
   setupImageUpload();
 
 
-  document.getElementById(
-    "createProductButton"
-  ).addEventListener(
-    "click",
-    openCreateModal
-  );
+  document
+    .getElementById(
+      "createProductButton"
+    )
+    .addEventListener(
+      "click",
+      openCreateModal
+    );
 
 
-  document.getElementById(
-    "createProductButtonSecondary"
-  ).addEventListener(
-    "click",
-    openCreateModal
-  );
+  document
+    .getElementById(
+      "createProductButtonSecondary"
+    )
+    .addEventListener(
+      "click",
+      openCreateModal
+    );
 
 
-  document.getElementById(
-    "productsCreateButton"
-  ).addEventListener(
-    "click",
-    openCreateModal
-  );
+  document
+    .getElementById(
+      "productsCreateButton"
+    )
+    .addEventListener(
+      "click",
+      openCreateModal
+    );
 
 
-  document.getElementById(
-    "closeModalButton"
-  ).addEventListener(
-    "click",
-    closeModal
-  );
+  document
+    .getElementById(
+      "closeModalButton"
+    )
+    .addEventListener(
+      "click",
+      closeModal
+    );
 
 
-  document.getElementById(
-    "cancelProductButton"
-  ).addEventListener(
-    "click",
-    closeModal
-  );
+  document
+    .getElementById(
+      "cancelProductButton"
+    )
+    .addEventListener(
+      "click",
+      closeModal
+    );
 
 
-  document.getElementById(
-    "modalOverlay"
-  ).addEventListener(
-    "click",
-    closeModal
-  );
+  document
+    .getElementById(
+      "modalOverlay"
+    )
+    .addEventListener(
+      "click",
+      closeModal
+    );
 
 
   productForm.addEventListener(
@@ -2128,19 +2375,21 @@ async function start() {
   );
 
 
-  document.getElementById(
-    "logoutButton"
-  ).addEventListener(
-    "click",
-    async () => {
+  document
+    .getElementById(
+      "logoutButton"
+    )
+    .addEventListener(
+      "click",
+      async () => {
 
-      await supabase.auth.signOut();
+        await supabase.auth.signOut();
 
-      window.location.href =
-        "./login.html";
+        window.location.href =
+          "./login.html";
 
-    }
-  );
+      }
+    );
 
 
   await Promise.all([

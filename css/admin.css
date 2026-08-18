@@ -2542,3 +2542,412 @@ input:checked
     width: 100%;
   }
 }
+
+.product-actions-three {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 7px;
+}
+
+
+.archive-product {
+  min-height: 40px;
+
+  border:
+    1px solid
+    rgba(167, 139, 250, 0.38);
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(137, 101, 230, 0.17),
+      rgba(63, 45, 110, 0.12)
+    );
+
+  color: #d8ccff;
+
+  font-size: 9px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+
+.archive-product:hover {
+  transform: translateY(-2px);
+
+  border-color:
+    rgba(194, 169, 255, 0.7);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(158, 119, 255, 0.27),
+      rgba(79, 53, 145, 0.18)
+    );
+
+  box-shadow:
+    0 0 22px
+    rgba(139, 92, 246, 0.12);
+}
+
+
+.custom-delete-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 100000;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background:
+    rgba(2, 2, 5, 0.82);
+
+  backdrop-filter:
+    blur(18px);
+}
+
+
+.custom-delete-card {
+  width: min(
+    440px,
+    100%
+  );
+
+  padding: 30px;
+
+  border:
+    1px solid
+    rgba(255, 104, 90, 0.22);
+
+  border-radius: 20px;
+
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(255, 82, 70, 0.08),
+      transparent 38%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(27, 23, 35, 0.99),
+      rgba(8, 8, 12, 0.99)
+    );
+
+  color: #ffffff;
+
+  text-align: center;
+
+  box-shadow:
+    0 35px 100px
+    rgba(0, 0, 0, 0.7),
+    0 0 55px
+    rgba(255, 70, 60, 0.08);
+}
+
+
+.delete-warning-icon {
+  width: 52px;
+  height: 52px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin:
+    0
+    auto
+    18px;
+
+  border:
+    1px solid
+    rgba(255, 105, 91, 0.38);
+
+  border-radius: 50%;
+
+  background:
+    rgba(255, 74, 60, 0.09);
+
+  color: #ff8e82;
+
+  font-size: 23px;
+  font-weight: 950;
+
+  box-shadow:
+    0 0 25px
+    rgba(255, 70, 58, 0.1);
+}
+
+
+.delete-eyebrow {
+  margin-bottom: 7px;
+
+  color: #ff8e82;
+
+  font-size: 8px;
+  font-weight: 900;
+
+  letter-spacing: 1.7px;
+}
+
+
+.custom-delete-card h2 {
+  margin: 0;
+
+  font-size: 25px;
+}
+
+
+.delete-product-name {
+  margin-top: 10px;
+
+  color: #d7d0dd;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+
+.delete-description,
+.delete-final-warning {
+  margin-top: 15px;
+
+  color: #817a89;
+
+  font-size: 11px;
+
+  line-height: 1.6;
+}
+
+
+.delete-order-warning {
+  margin-top: 18px;
+
+  padding: 14px;
+
+  border:
+    1px solid
+    rgba(255, 97, 82, 0.2);
+
+  border-radius: 11px;
+
+  background:
+    rgba(255, 70, 56, 0.055);
+
+  color: #d69b96;
+
+  font-size: 11px;
+
+  line-height: 1.55;
+}
+
+
+.delete-order-warning strong {
+  color: #ffffff;
+}
+
+
+.custom-delete-actions {
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    1fr;
+
+  gap: 9px;
+
+  margin-top: 24px;
+}
+
+
+.custom-delete-cancel,
+.custom-delete-confirm {
+  min-height: 45px;
+
+  border-radius: 10px;
+
+  font-size: 10px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+
+.custom-delete-cancel {
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.1);
+
+  background:
+    rgba(255, 255, 255, 0.035);
+
+  color: #aaa4b0;
+}
+
+
+.custom-delete-cancel:hover {
+  transform: translateY(-2px);
+
+  color: #ffffff;
+
+  border-color:
+    rgba(255, 255, 255, 0.2);
+
+  background:
+    rgba(255, 255, 255, 0.06);
+}
+
+
+.custom-delete-confirm {
+  border:
+    1px solid
+    rgba(255, 92, 78, 0.44);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 69, 55, 0.24),
+      rgba(121, 33, 40, 0.2)
+    );
+
+  color: #ffaba2;
+}
+
+
+.custom-delete-confirm:hover {
+  transform: translateY(-2px);
+
+  border-color:
+    rgba(255, 124, 110, 0.75);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 76, 61, 0.34),
+      rgba(145, 38, 47, 0.25)
+    );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 0 25px
+    rgba(255, 72, 60, 0.1);
+}
+
+
+.custom-delete-confirm:disabled {
+  opacity: 0.5;
+
+  cursor: wait;
+}
+
+
+.admin-action-toast {
+  position: fixed;
+
+  left: 50%;
+  bottom: 28px;
+
+  z-index: 110000;
+
+  width: min(
+    370px,
+    calc(100% - 30px)
+  );
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+
+  padding: 14px 17px;
+
+  transform:
+    translate(
+      -50%,
+      20px
+    );
+
+  opacity: 0;
+
+  border:
+    1px solid
+    rgba(167, 139, 250, 0.25);
+
+  border-radius: 11px;
+
+  background:
+    rgba(16, 13, 22, 0.97);
+
+  box-shadow:
+    0 20px 50px
+    rgba(0, 0, 0, 0.5);
+
+  backdrop-filter:
+    blur(15px);
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.admin-action-toast.show {
+  opacity: 1;
+
+  transform:
+    translate(
+      -50%,
+      0
+    );
+}
+
+
+.admin-action-toast strong {
+  color: #ffffff;
+
+  font-size: 11px;
+}
+
+
+.admin-action-toast span {
+  color: #98919f;
+
+  font-size: 9px;
+}
+
+
+@media (max-width: 600px) {
+
+  .product-actions-three {
+    grid-template-columns: 1fr;
+  }
+
+
+  .custom-delete-actions {
+    grid-template-columns: 1fr;
+  }
+}
