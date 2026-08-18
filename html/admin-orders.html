@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>LZL Store | Admin Orders</title>
+
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/admin-orders.css">
+</head>
+
+<body>
+
+  <div class="admin-layout">
+
+    <aside class="sidebar">
+
+      <div class="sidebar-brand">
+        <h1>LZL</h1>
+        <span>STORE ADMIN</span>
+      </div>
+
+      <nav class="sidebar-nav">
+
+        <a
+          href="./admin.html"
+          class="nav-item"
+        >
+          Dashboard
+        </a>
+
+        <a
+          href="./admin.html"
+          class="nav-item"
+        >
+          Products
+        </a>
+
+        <a
+          href="./admin-orders.html"
+          class="nav-item active"
+        >
+          Orders
+        </a>
+
+        <a
+          href="./admin.html"
+          class="nav-item"
+        >
+          Customers
+        </a>
+
+        <a
+          href="./admin.html"
+          class="nav-item"
+        >
+          Settings
+        </a>
+
+      </nav>
+
+      <button
+        id="logoutButton"
+        class="logout-button"
+        type="button"
+      >
+        Sign Out
+      </button>
+
+    </aside>
+
+
+    <main class="admin-main">
+
+      <header class="topbar">
+
+        <div>
+
+          <p class="eyebrow">
+            ADMIN PANEL
+          </p>
+
+          <h2>
+            Orders
+          </h2>
+
+        </div>
+
+      </header>
+
+
+      <section class="dashboard-content">
+
+        <div class="stats-grid">
+
+          <div class="stat-card">
+
+            <span>
+              Total Orders
+            </span>
+
+            <strong id="totalOrders">
+              0
+            </strong>
+
+          </div>
+
+
+          <div class="stat-card">
+
+            <span>
+              Pending Verification
+            </span>
+
+            <strong id="pendingOrders">
+              0
+            </strong>
+
+          </div>
+
+
+          <div class="stat-card">
+
+            <span>
+              Completed
+            </span>
+
+            <strong id="completedOrders">
+              0
+            </strong>
+
+          </div>
+
+
+          <div class="stat-card">
+
+            <span>
+              Revenue
+            </span>
+
+            <strong id="totalRevenue">
+              RM 0.00
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <section class="products-section">
+
+          <div class="section-header">
+
+            <div>
+
+              <p class="eyebrow">
+                PAYMENT REVIEW
+              </p>
+
+              <h3>
+                Customer Orders
+              </h3>
+
+            </div>
+
+          </div>
+
+
+          <div
+            id="ordersContainer"
+            class="admin-orders-container"
+          >
+
+            <div class="admin-orders-loading">
+              Loading orders...
+            </div>
+
+          </div>
+
+        </section>
+
+      </section>
+
+    </main>
+
+  </div>
+
+
+  <script
+    type="module"
+    src="../js/admin-orders.js"
+  ></script>
+
+</body>
+
+</html>

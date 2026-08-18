@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>LZL Store | Admin</title>
+
+  <link
+    rel="stylesheet"
+    href="../css/admin.css"
+  >
+</head>
+
+<body>
+
+  <div class="admin-layout">
+
+    <aside class="sidebar">
+
+      <div class="sidebar-brand">
+        <h1>LZL</h1>
+        <span>STORE ADMIN</span>
+      </div>
+
+      <nav class="sidebar-nav">
+
+        <button
+          id="dashboardNav"
+          class="nav-item active"
+          type="button"
+        >
+          Dashboard
+        </button>
+
+        <button
+          id="productsNav"
+          class="nav-item"
+          type="button"
+        >
+          Products
+        </button>
+
+        <a
+          href="./admin-orders.html"
+          class="nav-item"
+        >
+          Orders
+        </a>
+
+        <button
+          id="customersNav"
+          class="nav-item"
+          type="button"
+        >
+          Customers
+        </button>
+
+        <button
+          id="settingsNav"
+          class="nav-item"
+          type="button"
+        >
+          Settings
+        </button>
+
+      </nav>
+
+      <button
+        id="logoutButton"
+        class="logout-button"
+        type="button"
+      >
+        Sign Out
+      </button>
+
+    </aside>
+
+
+    <main class="admin-main">
+
+      <header class="topbar">
+
+        <div>
+
+          <p class="eyebrow">
+            ADMIN PANEL
+          </p>
+
+          <h2 id="pageTitle">
+            Dashboard
+          </h2>
+
+        </div>
+
+        <button
+          id="createProductButton"
+          class="create-button"
+          type="button"
+        >
+          + Create Product
+        </button>
+
+      </header>
+
+
+      <section
+        id="dashboardSection"
+        class="admin-section"
+      >
+
+        <div class="dashboard-content">
+
+          <div class="stats-grid">
+
+            <div class="stat-card">
+
+              <span>
+                Total Products
+              </span>
+
+              <strong id="productCount">
+                0
+              </strong>
+
+            </div>
+
+            <div class="stat-card">
+
+              <span>
+                Orders
+              </span>
+
+              <strong id="orderCount">
+                0
+              </strong>
+
+            </div>
+
+            <div class="stat-card">
+
+              <span>
+                Customers
+              </span>
+
+              <strong id="customerCount">
+                0
+              </strong>
+
+            </div>
+
+            <div class="stat-card">
+
+              <span>
+                Revenue
+              </span>
+
+              <strong id="revenueCount">
+                RM 0.00
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <section class="products-section">
+
+            <div class="section-header">
+
+              <div>
+
+                <p class="eyebrow">
+                  STORE INVENTORY
+                </p>
+
+                <h3>
+                  Products
+                </h3>
+
+              </div>
+
+              <button
+                id="createProductButtonSecondary"
+                type="button"
+              >
+                + Create Product
+              </button>
+
+            </div>
+
+            <div
+              id="productsContainer"
+              class="products-container"
+            >
+
+              <div class="empty-state">
+
+                <div class="empty-icon">
+                  +
+                </div>
+
+                <h4>
+                  No products yet
+                </h4>
+
+                <p>
+                  Add your first product to your store.
+                </p>
+
+              </div>
+
+            </div>
+
+          </section>
+
+        </div>
+
+      </section>
+
+
+      <section
+        id="productsSection"
+        class="admin-section hidden"
+      >
+
+        <div class="dashboard-content">
+
+          <section class="products-section">
+
+            <div class="section-header">
+
+              <div>
+
+                <p class="eyebrow">
+                  INVENTORY MANAGEMENT
+                </p>
+
+                <h3>
+                  All Products
+                </h3>
+
+              </div>
+
+              <button
+                id="productsCreateButton"
+                type="button"
+              >
+                + Create Product
+              </button>
+
+            </div>
+
+            <div
+              id="productsPageContainer"
+              class="products-container"
+            >
+            </div>
+
+          </section>
+
+        </div>
+
+      </section>
+
+
+      <section
+        id="customersSection"
+        class="admin-section hidden"
+      >
+
+        <div class="dashboard-content">
+
+          <section class="products-section">
+
+            <div class="section-header">
+
+              <div>
+
+                <p class="eyebrow">
+                  CUSTOMER MANAGEMENT
+                </p>
+
+                <h3>
+                  Customers
+                </h3>
+
+              </div>
+
+            </div>
+
+            <div
+              id="customersContainer"
+              class="products-container"
+            >
+
+              <div class="empty-state">
+
+                <h4>
+                  Loading customers...
+                </h4>
+
+              </div>
+
+            </div>
+
+          </section>
+
+        </div>
+
+      </section>
+
+
+      <section
+        id="settingsSection"
+        class="admin-section hidden"
+      >
+
+        <div class="dashboard-content">
+
+          <section class="products-section">
+
+            <div class="section-header">
+
+              <div>
+
+                <p class="eyebrow">
+                  ADMIN SETTINGS
+                </p>
+
+                <h3>
+                  Store Settings
+                </h3>
+
+              </div>
+
+            </div>
+
+            <div class="settings-grid">
+
+              <div class="stat-card">
+
+                <span>
+                  Store Name
+                </span>
+
+                <strong>
+                  LZL Store
+                </strong>
+
+              </div>
+
+              <div class="stat-card">
+
+                <span>
+                  Categories
+                </span>
+
+                <strong>
+                  Toy / Game
+                </strong>
+
+              </div>
+
+              <div class="stat-card">
+
+                <span>
+                  Payment
+                </span>
+
+                <strong>
+                  TNG eWallet
+                </strong>
+
+              </div>
+
+              <div class="stat-card">
+
+                <span>
+                  Admin Email
+                </span>
+
+                <strong id="adminEmail">
+                  Loading...
+                </strong>
+
+              </div>
+
+            </div>
+
+          </section>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+
+  <div
+    id="productModal"
+    class="modal hidden"
+  >
+
+    <div
+      id="modalOverlay"
+      class="modal-overlay"
+    >
+    </div>
+
+    <div class="modal-card">
+
+      <div class="modal-header">
+
+        <div>
+
+          <p class="eyebrow">
+            INVENTORY
+          </p>
+
+          <h2>
+            Product
+          </h2>
+
+        </div>
+
+        <button
+          id="closeModalButton"
+          class="close-button"
+          type="button"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <form id="productForm">
+
+        <input
+          id="editingProductId"
+          type="hidden"
+          value=""
+        >
+
+        <div class="form-grid">
+
+          <div class="form-group">
+
+            <label for="productName">
+              Product Name
+            </label>
+
+            <input
+              id="productName"
+              type="text"
+              placeholder="Product name"
+              required
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="limitedId">
+              Product ID
+            </label>
+
+            <input
+              id="limitedId"
+              type="text"
+              placeholder="Example: 123456789"
+              required
+            >
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label for="description">
+              Description
+            </label>
+
+            <textarea
+              id="description"
+              rows="4"
+              placeholder="Product description"
+            ></textarea>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="price">
+              Price
+            </label>
+
+            <input
+              id="price"
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+              required
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="stock">
+              Stock
+            </label>
+
+            <input
+              id="stock"
+              type="number"
+              min="0"
+              placeholder="0"
+              required
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="category">
+              Category
+            </label>
+
+            <select
+              id="category"
+              required
+            >
+
+              <option value="toy">
+                Toy
+              </option>
+
+              <option value="game">
+                Game
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="sellerName">
+              Seller Name
+            </label>
+
+            <input
+              id="sellerName"
+              type="text"
+              placeholder="LZL Store"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="productStatus">
+              Status
+            </label>
+
+            <select id="productStatus">
+
+              <option value="active">
+                Active
+              </option>
+
+              <option value="draft">
+                Draft
+              </option>
+
+              <option value="sold_out">
+                Sold Out
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Hot Product
+            </label>
+
+            <label
+              for="isHot"
+              class="hot-toggle-card"
+            >
+
+              <input
+                id="isHot"
+                type="checkbox"
+              >
+
+              <span class="hot-toggle-switch">
+              </span>
+
+              <span class="hot-toggle-copy">
+
+                <strong>
+                  Feature in Hot
+                </strong>
+
+                <small>
+                  Turn this on to show this listing in Hot.
+                </small>
+
+              </span>
+
+            </label>
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label for="productImage">
+              Product Image
+            </label>
+
+            <div class="product-image-upload">
+
+              <input
+                id="productImage"
+                class="product-image-input"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+              >
+
+              <input
+                id="thumbnailUrl"
+                type="hidden"
+                value=""
+              >
+
+              <label
+                for="productImage"
+                class="product-image-dropzone"
+              >
+
+                <span class="upload-icon">
+                  +
+                </span>
+
+                <span class="upload-copy">
+
+                  <strong>
+                    Upload Product Photo
+                  </strong>
+
+                  <small>
+                    JPG, PNG or WEBP. Maximum 5 MB.
+                  </small>
+
+                </span>
+
+              </label>
+
+
+              <div
+                id="productImagePreview"
+                class="product-image-preview hidden"
+              >
+
+                <img
+                  id="productImagePreviewImg"
+                  src=""
+                  alt="Product preview"
+                >
+
+                <div class="product-image-preview-info">
+
+                  <strong id="productImageFileName">
+                    Current image
+                  </strong>
+
+                  <button
+                    id="removeProductImageButton"
+                    type="button"
+                  >
+                    Remove
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label for="itemUrl">
+              Product URL
+            </label>
+
+            <input
+              id="itemUrl"
+              type="url"
+              placeholder="https://..."
+            >
+
+          </div>
+
+        </div>
+
+
+        <div
+          id="productMessage"
+          class="product-message"
+        >
+        </div>
+
+
+        <div class="modal-actions">
+
+          <button
+            id="cancelProductButton"
+            class="cancel-button"
+            type="button"
+          >
+            Cancel
+          </button>
+
+          <button
+            id="saveProductButton"
+            class="save-button"
+            type="submit"
+          >
+            Create Product
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <script
+    type="module"
+    src="../js/admin.js"
+  ></script>
+
+</body>
+
+</html>

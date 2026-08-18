@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>LZL Store | Login</title>
+
+  <link rel="stylesheet" href="../css/login.css">
+</head>
+
+<body>
+
+  <main class="login-page">
+
+    <section class="login-card">
+
+      <div class="brand">
+        <h1>LZL STORE</h1>
+        <p>Welcome back</p>
+      </div>
+
+      <form id="loginForm">
+
+        <div class="input-group">
+          <label for="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="Enter your email"
+            autocomplete="email"
+            required
+          >
+        </div>
+
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required
+          >
+        </div>
+
+        <button type="submit" class="login-button">
+          Sign In
+        </button>
+
+      </form>
+
+      <p id="loginMessage" class="login-message"></p>
+
+      <p class="signup-text">
+        Don't have an account?
+        <a href="./signup.html">Create account</a>
+      </p>
+
+    </section>
+
+  </main>
+
+  <script type="module" src="../js/auth.js"></script>
+
+</body>
+</html>

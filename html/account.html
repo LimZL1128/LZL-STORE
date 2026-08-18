@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>LZL Store | Account</title>
+
+  <link rel="stylesheet" href="../css/store.css">
+  <link rel="stylesheet" href="../css/account.css">
+</head>
+
+<body>
+
+  <header class="store-header">
+
+    <div class="store-logo">
+      <h1>LZL</h1>
+      <span>STORE</span>
+    </div>
+
+    <nav class="store-nav">
+
+      <a href="./store.html">
+        Store
+      </a>
+
+      <a href="./store.html">
+        Limited
+      </a>
+
+      <a href="./store.html">
+        New
+      </a>
+
+    </nav>
+
+    <div class="header-actions">
+
+      <button
+        id="cartButton"
+        class="header-button cart-button"
+        type="button"
+      >
+        Cart
+        <span id="cartCount">0</span>
+      </button>
+
+      <button
+        id="logoutButton"
+        class="header-button"
+        type="button"
+      >
+        Sign Out
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <main class="account-page">
+
+    <section class="account-header">
+
+      <div>
+
+        <p class="eyebrow">
+          CUSTOMER ACCOUNT
+        </p>
+
+        <h1>
+          My Account
+        </h1>
+
+        <p>
+          View your profile and order history.
+        </p>
+
+      </div>
+
+
+      <div class="account-header-actions">
+
+        <a
+          href="#myOrders"
+          class="orders-button"
+        >
+          My Orders
+        </a>
+
+        <a
+          href="./store.html"
+          class="shop-button"
+        >
+          Continue Shopping
+        </a>
+
+      </div>
+
+    </section>
+
+
+    <section class="account-grid">
+
+      <aside class="account-profile-card">
+
+        <p class="eyebrow">
+          PROFILE
+        </p>
+
+        <h2>
+          Account
+        </h2>
+
+        <div
+          id="accountInfo"
+          class="account-info"
+        >
+          Loading account...
+        </div>
+
+      </aside>
+
+
+      <section
+        id="myOrders"
+        class="account-orders"
+      >
+
+        <div class="account-orders-header">
+
+          <div>
+
+            <p class="eyebrow">
+              PURCHASES
+            </p>
+
+            <h2>
+              My Orders
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div
+          id="ordersContainer"
+          class="orders-container"
+        >
+          Loading orders...
+        </div>
+
+      </section>
+
+    </section>
+
+  </main>
+
+
+  <footer class="store-footer">
+
+    <div class="footer-brand">
+
+      <h3>
+        LZL STORE
+      </h3>
+
+      <p>
+        Roblox Limited marketplace.
+      </p>
+
+    </div>
+
+    <div class="footer-links">
+
+      <a href="#">
+        Terms
+      </a>
+
+      <a href="#">
+        Privacy
+      </a>
+
+      <a href="#">
+        Contact
+      </a>
+
+    </div>
+
+  </footer>
+
+
+  <script
+    type="module"
+    src="../js/account.js"
+  ></script>
+
+</body>
+
+</html>

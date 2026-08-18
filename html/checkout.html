@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>LZL Store | Checkout</title>
+
+  <link rel="stylesheet" href="../css/store.css">
+  <link rel="stylesheet" href="../css/checkout.css">
+</head>
+
+<body>
+
+  <header class="store-header">
+
+    <div class="store-logo">
+      <h1>LZL</h1>
+      <span>STORE</span>
+    </div>
+
+    <nav class="store-nav">
+      <a href="./store.html">Store</a>
+      <a href="./store.html">Limited</a>
+      <a href="./store.html">New</a>
+    </nav>
+
+    <div class="header-actions">
+
+      <button
+        id="cartButton"
+        class="header-button cart-button"
+        type="button"
+      >
+        Cart
+        <span id="cartCount">0</span>
+      </button>
+
+      <button
+        id="accountButton"
+        class="header-button"
+        type="button"
+      >
+        Account
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <main class="checkout-page">
+
+    <div class="checkout-header">
+
+      <p class="eyebrow">
+        CHECKOUT
+      </p>
+
+      <h1>
+        Complete Your Order
+      </h1>
+
+      <p>
+        Enter your Roblox account, complete payment, then submit your order.
+      </p>
+
+    </div>
+
+
+    <section class="checkout-layout">
+
+      <div class="checkout-main">
+
+
+        <section class="checkout-card">
+
+          <div class="checkout-card-header">
+
+            <p class="eyebrow">
+              CUSTOMER
+            </p>
+
+            <h2>
+              Account
+            </h2>
+
+          </div>
+
+          <div
+            id="customerStatus"
+            class="customer-status"
+          >
+            Checking your account...
+          </div>
+
+        </section>
+
+
+        <section class="checkout-card">
+
+          <div class="checkout-card-header">
+
+            <p class="eyebrow">
+              ROBLOX
+            </p>
+
+            <h2>
+              Roblox Account
+            </h2>
+
+          </div>
+
+          <div class="roblox-account-box">
+
+            <label for="robloxUsername">
+              Roblox Username
+            </label>
+
+            <input
+              id="robloxUsername"
+              type="text"
+              maxlength="40"
+              autocomplete="off"
+              placeholder="Enter your Roblox username"
+            >
+
+            <p>
+              Enter the exact Roblox username receiving the Limited.
+            </p>
+
+          </div>
+
+        </section>
+
+
+        <section class="checkout-card">
+
+          <div class="checkout-card-header">
+
+            <p class="eyebrow">
+              ORDER
+            </p>
+
+            <h2>
+              Your Items
+            </h2>
+
+          </div>
+
+          <div
+            id="checkoutItems"
+            class="checkout-items"
+          >
+            Loading order...
+          </div>
+
+        </section>
+
+
+        <section class="checkout-card">
+
+          <div class="checkout-card-header">
+
+            <p class="eyebrow">
+              PAYMENT
+            </p>
+
+            <h2>
+              Touch 'n Go eWallet
+            </h2>
+
+          </div>
+
+
+          <div class="payment-option">
+
+            <div class="payment-icon">
+              TNG
+            </div>
+
+            <div>
+
+              <strong>
+                DuitNow QR
+              </strong>
+
+              <span>
+                Scan using Touch 'n Go eWallet or a supported banking app.
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="tng-payment-box">
+
+            <div class="tng-header">
+
+              <div>
+
+                <span class="tng-label">
+                  PAYMENT QR
+                </span>
+
+                <strong>
+                  Scan to Pay
+                </strong>
+
+              </div>
+
+              <div class="payment-status">
+                Pending Verification
+              </div>
+
+            </div>
+
+
+            <div class="tng-content">
+
+              <div class="tng-qr">
+
+                <img
+                  src="../assets/tng-qr.jpg"
+                  alt="Touch n Go DuitNow Payment QR"
+                >
+
+              </div>
+
+
+              <div class="tng-info">
+
+                <p>
+                  Pay the exact amount shown below.
+                </p>
+
+                <div class="payment-detail">
+
+                  <span>
+                    Recipient
+                  </span>
+
+                  <strong>
+                    LIM ZHAO LIANG
+                  </strong>
+
+                </div>
+
+                <div class="payment-detail">
+
+                  <span>
+                    Amount
+                  </span>
+
+                  <strong
+                    id="tngAmount"
+                    class="tng-total"
+                  >
+                    RM 0.00
+                  </strong>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="payment-reference-box">
+
+            <div class="reference-header">
+
+              <span class="reference-step">
+                PAYMENT CONFIRMATION
+              </span>
+
+              <h3>
+                Submit your transaction reference
+              </h3>
+
+              <p>
+                Copy the transaction reference from your payment receipt.
+              </p>
+
+            </div>
+
+            <label
+              for="paymentReference"
+              class="reference-label"
+            >
+              TNG Transaction Reference
+            </label>
+
+            <input
+              id="paymentReference"
+              class="reference-input"
+              type="text"
+              maxlength="120"
+              autocomplete="off"
+              placeholder="Example: TNG123456789"
+            >
+
+            <label class="payment-check">
+
+              <input
+                id="paymentConfirmed"
+                type="checkbox"
+              >
+
+              <span>
+                I have paid the exact order total.
+              </span>
+
+            </label>
+
+            <p class="verification-note">
+              Your order stays Pending until LZL Store verifies the payment.
+            </p>
+
+          </div>
+
+        </section>
+
+      </div>
+
+
+      <aside class="checkout-summary">
+
+        <p class="eyebrow">
+          ORDER SUMMARY
+        </p>
+
+        <h2>
+          Summary
+        </h2>
+
+        <div class="summary-row">
+          <span>Items</span>
+          <span id="summaryItems">0</span>
+        </div>
+
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <strong id="summarySubtotal">
+            RM 0.00
+          </strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Payment</span>
+          <strong>TNG eWallet</strong>
+        </div>
+
+        <div class="summary-divider"></div>
+
+        <div class="summary-total">
+          <span>Total</span>
+          <strong id="summaryTotal">
+            RM 0.00
+          </strong>
+        </div>
+
+        <button
+          id="placeOrderButton"
+          class="place-order-button"
+          type="button"
+        >
+          Submit Payment & Place Order
+        </button>
+
+        <p
+          id="checkoutMessage"
+          class="checkout-message"
+        ></p>
+
+        <a
+          href="./cart.html"
+          class="back-cart"
+        >
+          Back to Cart
+        </a>
+
+      </aside>
+
+    </section>
+
+  </main>
+
+
+  <script
+    type="module"
+    src="../js/checkout.js"
+  ></script>
+
+</body>
+
+</html>

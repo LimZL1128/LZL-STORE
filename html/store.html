@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="LZL Store online marketplace for toys and games."
+  >
+
+  <title>LZL Store</title>
+
+  <link
+    rel="stylesheet"
+    href="../css/store.css"
+  >
+</head>
+
+<body>
+
+  <header class="store-header">
+
+    <a
+      href="./store.html"
+      class="store-logo"
+      aria-label="LZL Store Home"
+    >
+      <h1>LZL</h1>
+      <span>STORE</span>
+    </a>
+
+
+    <nav
+      class="store-nav"
+      aria-label="Store navigation"
+    >
+
+      <button
+        id="storeNavButton"
+        class="store-nav-button active"
+        type="button"
+        data-filter="all"
+      >
+        Store
+      </button>
+
+      <button
+        id="toyNavButton"
+        class="store-nav-button"
+        type="button"
+        data-filter="toy"
+      >
+        Toy
+      </button>
+
+      <button
+        id="gameNavButton"
+        class="store-nav-button"
+        type="button"
+        data-filter="game"
+      >
+        Game
+      </button>
+
+      <button
+        id="hotNavButton"
+        class="store-nav-button hot-nav-button"
+        type="button"
+        data-filter="hot"
+      >
+        <span class="hot-dot"></span>
+        Hot
+      </button>
+
+      <button
+        id="newNavButton"
+        class="store-nav-button"
+        type="button"
+        data-filter="new"
+      >
+        New
+      </button>
+
+    </nav>
+
+
+    <div class="header-actions">
+
+      <button
+        id="searchButton"
+        class="header-button search-button"
+        type="button"
+        aria-label="Search products"
+      >
+        <span class="search-icon">
+          ⌕
+        </span>
+
+        <span>
+          Search
+        </span>
+      </button>
+
+
+      <button
+        id="cartButton"
+        class="header-button cart-button"
+        type="button"
+        aria-label="Open cart"
+      >
+        <span>
+          Cart
+        </span>
+
+        <span
+          id="cartCount"
+          class="cart-count"
+        >
+          0
+        </span>
+      </button>
+
+
+      <button
+        id="accountButton"
+        class="header-button account-button"
+        type="button"
+      >
+        Account
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <div
+    id="searchPanel"
+    class="search-panel hidden"
+  >
+
+    <div class="search-panel-inner">
+
+      <div class="search-input-wrapper">
+
+        <span class="search-field-icon">
+          ⌕
+        </span>
+
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Search products..."
+          autocomplete="off"
+        >
+
+        <button
+          id="clearSearchButton"
+          class="clear-search-button hidden"
+          type="button"
+          aria-label="Clear search"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <button
+        id="closeSearchButton"
+        class="close-search-button"
+        type="button"
+      >
+        Close
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <main>
+
+    <section class="hero">
+
+      <div class="hero-glow hero-glow-one"></div>
+      <div class="hero-glow hero-glow-two"></div>
+
+
+      <div class="hero-content">
+
+        <div class="hero-badge">
+          LZL STORE
+        </div>
+
+        <h2>
+          Toys. Games.
+          <br>
+          One Store.
+        </h2>
+
+        <p class="hero-description">
+          Browse available products from LZL Store.
+        </p>
+
+
+        <div class="hero-actions">
+
+          <button
+            id="shopNowButton"
+            class="primary-button"
+            type="button"
+          >
+            Shop Now
+          </button>
+
+          <button
+            id="heroHotButton"
+            class="secondary-button"
+            type="button"
+          >
+            View Hot
+          </button>
+
+        </div>
+
+
+        <div class="hero-category-row">
+
+          <button
+            class="hero-category"
+            type="button"
+            data-category="toy"
+          >
+            <span class="hero-category-label">
+              CATEGORY
+            </span>
+
+            <strong>
+              Toys
+            </strong>
+
+            <span class="hero-category-arrow">
+              ›
+            </span>
+          </button>
+
+
+          <button
+            class="hero-category"
+            type="button"
+            data-category="game"
+          >
+            <span class="hero-category-label">
+              CATEGORY
+            </span>
+
+            <strong>
+              Games
+            </strong>
+
+            <span class="hero-category-arrow">
+              ›
+            </span>
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="hero-side">
+
+        <div class="hero-metal-card">
+
+          <span class="hero-metal-label">
+            LZL
+          </span>
+
+          <strong>
+            STORE
+          </strong>
+
+          <p>
+            TOY / GAME
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section
+      id="inventorySection"
+      class="store-content"
+    >
+
+      <div class="store-section-header">
+
+        <div>
+
+          <p
+            id="inventoryEyebrow"
+            class="eyebrow"
+          >
+            INVENTORY
+          </p>
+
+          <h2 id="inventoryTitle">
+            All Products
+          </h2>
+
+          <p
+            id="inventoryDescription"
+            class="inventory-description"
+          >
+            Browse products currently available from LZL Store.
+          </p>
+
+        </div>
+
+
+        <div class="store-controls">
+
+          <div
+            id="activeFilterBadge"
+            class="active-filter-badge"
+          >
+            All
+          </div>
+
+
+          <button
+            id="sortButton"
+            class="sort-button"
+            type="button"
+          >
+            <span id="sortButtonText">
+              Latest
+            </span>
+
+            <span class="sort-arrow">
+              ↓
+            </span>
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="category-filter-bar">
+
+        <button
+          class="category-filter active"
+          type="button"
+          data-filter="all"
+        >
+          All
+        </button>
+
+        <button
+          class="category-filter"
+          type="button"
+          data-filter="toy"
+        >
+          Toy
+        </button>
+
+        <button
+          class="category-filter"
+          type="button"
+          data-filter="game"
+        >
+          Game
+        </button>
+
+        <button
+          class="category-filter hot-filter"
+          type="button"
+          data-filter="hot"
+        >
+          <span class="hot-dot"></span>
+          Hot
+        </button>
+
+        <button
+          class="category-filter"
+          type="button"
+          data-filter="new"
+        >
+          New
+        </button>
+
+      </div>
+
+
+      <div
+        id="resultsBar"
+        class="results-bar"
+      >
+
+        <span id="resultsCount">
+          0 products
+        </span>
+
+        <button
+          id="resetFiltersButton"
+          class="reset-filters-button hidden"
+          type="button"
+        >
+          Reset
+        </button>
+
+      </div>
+
+
+      <div
+        id="productsContainer"
+        class="products-grid"
+      >
+
+        <div class="loading-state">
+
+          <div class="loading-spinner"></div>
+
+          <p>
+            Loading products...
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <div
+    id="toast"
+    class="store-toast"
+    role="status"
+    aria-live="polite"
+  >
+  </div>
+
+
+  <footer class="store-footer">
+
+    <div class="footer-brand">
+
+      <h3>
+        LZL STORE
+      </h3>
+
+      <p>
+        Toys and games marketplace.
+      </p>
+
+    </div>
+
+
+    <div class="footer-links">
+
+      <a href="#">
+        Terms
+      </a>
+
+      <a href="#">
+        Privacy
+      </a>
+
+      <a href="#">
+        Contact
+      </a>
+
+    </div>
+
+  </footer>
+
+
+  <script
+    type="module"
+    src="../js/store.js"
+  ></script>
+
+</body>
+
+</html>
