@@ -1,39 +1,84 @@
 import { supabase } from "./supabase.js";
 
+
 let products = [];
 let currentUser = null;
 
-const dashboardSection = document.getElementById("dashboardSection");
-const productsSection = document.getElementById("productsSection");
-const customersSection = document.getElementById("customersSection");
-const settingsSection = document.getElementById("settingsSection");
 
-const pageTitle = document.getElementById("pageTitle");
+const dashboardSection =
+  document.getElementById(
+    "dashboardSection"
+  );
 
-const productForm = document.getElementById("productForm");
-const productModal = document.getElementById("productModal");
-const productMessage = document.getElementById("productMessage");
+const productsSection =
+  document.getElementById(
+    "productsSection"
+  );
+
+const customersSection =
+  document.getElementById(
+    "customersSection"
+  );
+
+const settingsSection =
+  document.getElementById(
+    "settingsSection"
+  );
+
+const pageTitle =
+  document.getElementById(
+    "pageTitle"
+  );
+
+const productForm =
+  document.getElementById(
+    "productForm"
+  );
+
+const productModal =
+  document.getElementById(
+    "productModal"
+  );
+
+const productMessage =
+  document.getElementById(
+    "productMessage"
+  );
 
 const saveProductButton =
-  document.getElementById("saveProductButton");
+  document.getElementById(
+    "saveProductButton"
+  );
 
 const productImageInput =
-  document.getElementById("productImage");
+  document.getElementById(
+    "productImage"
+  );
 
 const thumbnailUrlInput =
-  document.getElementById("thumbnailUrl");
+  document.getElementById(
+    "thumbnailUrl"
+  );
 
 const productImagePreview =
-  document.getElementById("productImagePreview");
+  document.getElementById(
+    "productImagePreview"
+  );
 
 const productImagePreviewImg =
-  document.getElementById("productImagePreviewImg");
+  document.getElementById(
+    "productImagePreviewImg"
+  );
 
 const productImageFileName =
-  document.getElementById("productImageFileName");
+  document.getElementById(
+    "productImageFileName"
+  );
 
 const removeProductImageButton =
-  document.getElementById("removeProductImageButton");
+  document.getElementById(
+    "removeProductImageButton"
+  );
 
 
 function escapeHTML(value) {
@@ -47,46 +92,73 @@ function escapeHTML(value) {
 
 
 async function protectAdminPage() {
-  const {
-    data: { user },
-    error: userError
-  } = await supabase.auth.getUser();
 
-  if (userError || !user) {
-    window.location.href = "./login.html";
+  const {
+    data: {
+      user
+    },
+    error: userError
+  } =
+    await supabase.auth.getUser();
+
+
+  if (
+    userError ||
+    !user
+  ) {
+
+    window.location.href =
+      "./login.html";
+
     return null;
   }
+
 
   const {
     data: profile,
     error
-  } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
+  } =
+    await supabase
+      .from("profiles")
+      .select("role")
+      .eq(
+        "id",
+        user.id
+      )
+      .single();
+
 
   if (
     error ||
     !profile ||
     profile.role !== "admin"
   ) {
+
     await supabase.auth.signOut();
 
-    window.location.href = "./login.html";
+    window.location.href =
+      "./login.html";
 
     return null;
   }
 
+
   currentUser = user;
 
+
   const adminEmail =
-    document.getElementById("adminEmail");
+    document.getElementById(
+      "adminEmail"
+    );
+
 
   if (adminEmail) {
+
     adminEmail.textContent =
-      user.email || "Admin";
+      user.email ||
+      "Admin";
   }
+
 
   return user;
 }
@@ -97,125 +169,213 @@ function showSection(
   title,
   activeButton
 ) {
+
   [
     dashboardSection,
     productsSection,
     customersSection,
     settingsSection
   ].forEach(item => {
-    item.classList.add("hidden");
+
+    if (item) {
+      item.classList.add(
+        "hidden"
+      );
+    }
+
   });
 
-  section.classList.remove("hidden");
 
-  pageTitle.textContent = title;
+  if (section) {
+    section.classList.remove(
+      "hidden"
+    );
+  }
+
+
+  if (pageTitle) {
+    pageTitle.textContent =
+      title;
+  }
+
 
   document
     .querySelectorAll(
       ".sidebar-nav .nav-item"
     )
     .forEach(item => {
-      item.classList.remove("active");
+
+      item.classList.remove(
+        "active"
+      );
+
     });
 
-  activeButton.classList.add("active");
+
+  if (activeButton) {
+
+    activeButton.classList.add(
+      "active"
+    );
+  }
+
 }
 
 
 async function loadStats() {
+
   const [
-    {
-      data: orders,
-      error: ordersError
-    },
-    {
-      data: profiles,
-      error: profilesError
-    }
-  ] = await Promise.all([
-    supabase
-      .from("orders")
-      .select("id,total,status"),
+    ordersResult,
+    profilesResult
+  ] =
+    await Promise.all([
 
-    supabase
-      .from("profiles")
-      .select("id,role")
-  ]);
+      supabase
+        .from("orders")
+        .select(
+          "id,total,status"
+        ),
 
-  if (ordersError) {
-    console.error(ordersError);
+      supabase
+        .from("profiles")
+        .select(
+          "id,role"
+        )
+
+    ]);
+
+
+  if (ordersResult.error) {
+
+    console.error(
+      ordersResult.error
+    );
   }
 
-  if (profilesError) {
-    console.error(profilesError);
+
+  if (profilesResult.error) {
+
+    console.error(
+      profilesResult.error
+    );
   }
 
-  const orderList =
-    orders || [];
 
-  const customerList =
-    (profiles || []).filter(
+  const orders =
+    ordersResult.data ||
+    [];
+
+
+  const profiles =
+    profilesResult.data ||
+    [];
+
+
+  const customers =
+    profiles.filter(
       profile =>
-        profile.role !== "admin"
+        profile.role !==
+        "admin"
     );
 
+
   const revenue =
-    orderList.reduce(
-      (total, order) => {
+    orders.reduce(
+      (
+        total,
+        order
+      ) => {
+
         const status =
           String(
-            order.status || ""
+            order.status ||
+            ""
           ).toLowerCase();
+
 
         if (
           status !== "paid" &&
           status !== "processing" &&
           status !== "completed"
         ) {
+
           return total;
         }
 
+
         return (
           total +
-          Number(order.total || 0)
+          Number(
+            order.total ||
+            0
+          )
         );
+
       },
       0
     );
 
-  document.getElementById(
-    "orderCount"
-  ).textContent =
-    orderList.length;
 
-  document.getElementById(
-    "customerCount"
-  ).textContent =
-    customerList.length;
+  const orderCount =
+    document.getElementById(
+      "orderCount"
+    );
 
-  document.getElementById(
-    "revenueCount"
-  ).textContent =
-    `RM ${revenue.toFixed(2)}`;
+  const customerCount =
+    document.getElementById(
+      "customerCount"
+    );
+
+  const revenueCount =
+    document.getElementById(
+      "revenueCount"
+    );
+
+
+  if (orderCount) {
+
+    orderCount.textContent =
+      orders.length;
+  }
+
+
+  if (customerCount) {
+
+    customerCount.textContent =
+      customers.length;
+  }
+
+
+  if (revenueCount) {
+
+    revenueCount.textContent =
+      `RM ${revenue.toFixed(2)}`;
+  }
+
 }
 
 
 async function loadProducts() {
+
   const {
     data,
     error
-  } = await supabase
-    .from("products")
-    .select("*")
-    .order(
-      "created_at",
-      {
-        ascending: false
-      }
-    );
+  } =
+    await supabase
+      .from("products")
+      .select("*")
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
+
 
   if (error) {
+
     console.error(error);
+
 
     const errorHTML = `
       <div class="empty-state">
@@ -225,38 +385,70 @@ async function loadProducts() {
         </h4>
 
         <p>
-          ${escapeHTML(error.message)}
+          ${escapeHTML(
+            error.message
+          )}
         </p>
 
       </div>
     `;
 
-    document.getElementById(
-      "productsContainer"
-    ).innerHTML =
-      errorHTML;
 
-    document.getElementById(
-      "productsPageContainer"
-    ).innerHTML =
-      errorHTML;
+    const dashboardContainer =
+      document.getElementById(
+        "productsContainer"
+      );
+
+    const pageContainer =
+      document.getElementById(
+        "productsPageContainer"
+      );
+
+
+    if (dashboardContainer) {
+
+      dashboardContainer.innerHTML =
+        errorHTML;
+    }
+
+
+    if (pageContainer) {
+
+      pageContainer.innerHTML =
+        errorHTML;
+    }
+
 
     return;
   }
 
-  products = data || [];
 
-  document.getElementById(
-    "productCount"
-  ).textContent =
-    products.length;
+  products =
+    data ||
+    [];
+
+
+  const productCount =
+    document.getElementById(
+      "productCount"
+    );
+
+
+  if (productCount) {
+
+    productCount.textContent =
+      products.length;
+  }
+
 
   renderProducts();
 }
 
 
 function getProductsHTML() {
+
   if (!products.length) {
+
     return `
       <div class="empty-state">
 
@@ -276,9 +468,18 @@ function getProductsHTML() {
     `;
   }
 
+
   return products
     .map(product => {
-      const image =
+
+      const category =
+        String(
+          product.category ||
+          "toy"
+        ).toLowerCase();
+
+
+      const imageHTML =
         product.thumbnail_url
           ? `
             <img
@@ -297,27 +498,35 @@ function getProductsHTML() {
             </div>
           `;
 
-      const category =
-        String(
-          product.category || "toy"
-        ).toLowerCase();
+
+      const hotHTML =
+        product.is_hot
+          ? `
+            <span class="admin-hot-badge">
+              HOT
+            </span>
+          `
+          : "";
+
+
+      const hotMiniHTML =
+        product.is_hot
+          ? `
+            <span class="hot-mini-badge">
+              Hot
+            </span>
+          `
+          : "";
+
 
       return `
         <article class="product-card">
 
           <div class="product-image">
 
-            ${image}
+            ${imageHTML}
 
-            ${
-              product.is_hot
-                ? `
-                  <span class="admin-hot-badge">
-                    HOT
-                  </span>
-                `
-                : ""
-            }
+            ${hotHTML}
 
           </div>
 
@@ -372,15 +581,7 @@ function getProductsHTML() {
                 )}
               </span>
 
-              ${
-                product.is_hot
-                  ? `
-                    <span class="hot-mini-badge">
-                      Hot
-                    </span>
-                  `
-                  : ""
-              }
+              ${hotMiniHTML}
 
             </div>
 
@@ -395,7 +596,8 @@ function getProductsHTML() {
 
                 <strong>
                   RM ${Number(
-                    product.price || 0
+                    product.price ||
+                    0
                   ).toFixed(2)}
                 </strong>
 
@@ -410,7 +612,8 @@ function getProductsHTML() {
 
                 <strong>
                   ${Number(
-                    product.stock || 0
+                    product.stock ||
+                    0
                   )}
                 </strong>
 
@@ -431,6 +634,7 @@ function getProductsHTML() {
                 Edit
               </button>
 
+
               <button
                 class="delete-product"
                 data-id="${escapeHTML(
@@ -447,14 +651,17 @@ function getProductsHTML() {
 
         </article>
       `;
+
     })
     .join("");
 }
 
 
 function renderProducts() {
+
   const html =
     getProductsHTML();
+
 
   const dashboardContainer =
     document.getElementById(
@@ -466,74 +673,108 @@ function renderProducts() {
       "productsPageContainer"
     );
 
+
   const className =
     products.length
       ? "products-container product-grid"
       : "products-container";
 
-  dashboardContainer.className =
-    className;
 
-  productsPageContainer.className =
-    className;
+  if (dashboardContainer) {
 
-  dashboardContainer.innerHTML =
-    html;
+    dashboardContainer.className =
+      className;
 
-  productsPageContainer.innerHTML =
-    html;
+    dashboardContainer.innerHTML =
+      html;
+  }
+
+
+  if (productsPageContainer) {
+
+    productsPageContainer.className =
+      className;
+
+    productsPageContainer.innerHTML =
+      html;
+  }
+
 
   bindProductButtons();
 }
 
 
 function bindProductButtons() {
+
   document
     .querySelectorAll(
       ".edit-product"
     )
     .forEach(button => {
+
       button.addEventListener(
         "click",
         () => {
+
           const product =
             products.find(
               item =>
-                String(item.id) ===
+                String(
+                  item.id
+                ) ===
                 String(
                   button.dataset.id
                 )
             );
 
+
           if (product) {
-            openEditModal(product);
+
+            openEditModal(
+              product
+            );
           }
+
         }
       );
+
     });
+
 
   document
     .querySelectorAll(
       ".delete-product"
     )
     .forEach(button => {
+
       button.addEventListener(
         "click",
         () => {
+
           deleteProduct(
             button.dataset.id
           );
+
         }
       );
+
     });
+
 }
 
 
 async function loadCustomers() {
+
   const container =
     document.getElementById(
       "customersContainer"
     );
+
+
+  if (!container) {
+    return;
+  }
+
 
   container.innerHTML = `
     <div class="empty-state">
@@ -545,14 +786,22 @@ async function loadCustomers() {
     </div>
   `;
 
+
   const {
     data: profiles,
     error
-  } = await supabase
-    .from("profiles")
-    .select("id,role");
+  } =
+    await supabase
+      .from("profiles")
+      .select(
+        "id,role"
+      );
+
 
   if (error) {
+
+    console.error(error);
+
     container.innerHTML = `
       <div class="empty-state">
 
@@ -561,7 +810,9 @@ async function loadCustomers() {
         </h4>
 
         <p>
-          ${escapeHTML(error.message)}
+          ${escapeHTML(
+            error.message
+          )}
         </p>
 
       </div>
@@ -570,13 +821,18 @@ async function loadCustomers() {
     return;
   }
 
+
   const customers =
-    (profiles || []).filter(
-      profile =>
-        profile.role !== "admin"
-    );
+    (profiles || [])
+      .filter(
+        profile =>
+          profile.role !==
+          "admin"
+      );
+
 
   if (!customers.length) {
+
     container.innerHTML = `
       <div class="empty-state">
 
@@ -594,28 +850,39 @@ async function loadCustomers() {
     return;
   }
 
+
   const {
     data: orders,
     error: ordersError
-  } = await supabase
-    .from("orders")
-    .select(
-      "id,user_id,total,status"
-    );
+  } =
+    await supabase
+      .from("orders")
+      .select(
+        "id,user_id,total,status"
+      );
+
 
   if (ordersError) {
-    console.error(ordersError);
+
+    console.error(
+      ordersError
+    );
   }
 
+
   const orderList =
-    orders || [];
+    orders ||
+    [];
+
 
   container.className =
     "products-container product-grid";
 
+
   container.innerHTML =
     customers
       .map(customer => {
+
         const customerOrders =
           orderList.filter(
             order =>
@@ -627,27 +894,42 @@ async function loadCustomers() {
               )
           );
 
+
         const totalSpent =
           customerOrders.reduce(
-            (total, order) => {
-              if (
+            (
+              total,
+              order
+            ) => {
+
+              const status =
                 String(
-                  order.status || ""
-                ).toLowerCase() !==
+                  order.status ||
+                  ""
+                ).toLowerCase();
+
+
+              if (
+                status !==
                 "completed"
               ) {
+
                 return total;
               }
+
 
               return (
                 total +
                 Number(
-                  order.total || 0
+                  order.total ||
+                  0
                 )
               );
+
             },
             0
           );
+
 
         return `
           <article class="product-card">
@@ -670,6 +952,7 @@ async function loadCustomers() {
 
                 </div>
 
+
                 <span class="status-badge active">
                   Customer
                 </span>
@@ -691,6 +974,7 @@ async function loadCustomers() {
 
                 </div>
 
+
                 <div>
 
                   <span>
@@ -698,9 +982,7 @@ async function loadCustomers() {
                   </span>
 
                   <strong>
-                    RM ${totalSpent.toFixed(
-                      2
-                    )}
+                    RM ${totalSpent.toFixed(2)}
                   </strong>
 
                 </div>
@@ -711,89 +993,678 @@ async function loadCustomers() {
 
           </article>
         `;
+
       })
       .join("");
 }
 
 
-async function deleteProduct(id) {
-  const product =
-    products.find(
-      item =>
-        String(item.id) ===
-        String(id)
-    );
+function openDeleteChoiceModal(
+  productName,
+  orderCount
+) {
 
-  const productName =
-    product?.name ||
-    "this product";
+  return new Promise(
+    resolve => {
 
-  const confirmed =
-    confirm(
-      `Delete "${productName}" permanently?\n\nProducts connected to existing orders cannot be deleted.`
-    );
+      const oldModal =
+        document.getElementById(
+          "deleteChoiceModal"
+        );
 
-  if (!confirmed) {
-    return;
+
+      if (oldModal) {
+
+        oldModal.remove();
+      }
+
+
+      const overlay =
+        document.createElement(
+          "div"
+        );
+
+
+      overlay.id =
+        "deleteChoiceModal";
+
+
+      overlay.style.cssText = `
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 20px;
+
+        background:
+          rgba(0, 0, 0, 0.82);
+
+        backdrop-filter:
+          blur(14px);
+      `;
+
+
+      const hasOrders =
+        orderCount > 0;
+
+
+      overlay.innerHTML = `
+        <div
+          style="
+            width: min(480px, 100%);
+
+            padding: 28px;
+
+            border:
+              1px solid
+              rgba(177, 145, 255, 0.3);
+
+            border-radius: 18px;
+
+            background:
+              linear-gradient(
+                145deg,
+                rgba(28, 24, 39, 0.99),
+                rgba(8, 8, 12, 0.99)
+              );
+
+            box-shadow:
+              0 30px 80px
+              rgba(0, 0, 0, 0.6),
+              0 0 50px
+              rgba(139, 92, 246, 0.12);
+
+            color: white;
+
+            font-family:
+              Inter,
+              system-ui,
+              sans-serif;
+          "
+        >
+
+          <div
+            style="
+              color: #a98bff;
+
+              font-size: 9px;
+              font-weight: 900;
+
+              letter-spacing: 1.5px;
+            "
+          >
+            PRODUCT MANAGEMENT
+          </div>
+
+
+          <h2
+            style="
+              margin:
+                8px
+                0
+                0;
+
+              font-size: 22px;
+            "
+          >
+            ${escapeHTML(
+              productName
+            )}
+          </h2>
+
+
+          <p
+            style="
+              margin-top: 12px;
+
+              color: #aaa3b2;
+
+              font-size: 12px;
+
+              line-height: 1.7;
+            "
+          >
+
+            ${
+              hasOrders
+                ? `This listing appears in ${orderCount} existing order${orderCount === 1 ? "" : "s"}.`
+                : "This listing has no existing orders."
+            }
+
+          </p>
+
+
+          ${
+            hasOrders
+              ? `
+                <div
+                  style="
+                    margin-top: 16px;
+
+                    padding: 14px;
+
+                    border:
+                      1px solid
+                      rgba(255, 96, 82, 0.25);
+
+                    border-radius: 11px;
+
+                    background:
+                      rgba(255, 70, 55, 0.07);
+
+                    color: #ffaaa0;
+
+                    font-size: 11px;
+
+                    line-height: 1.6;
+                  "
+                >
+                  Permanent deletion removes the linked order item records too.
+                </div>
+              `
+              : `
+                <div
+                  style="
+                    margin-top: 16px;
+
+                    padding: 14px;
+
+                    border:
+                      1px solid
+                      rgba(167, 139, 250, 0.2);
+
+                    border-radius: 11px;
+
+                    background:
+                      rgba(139, 92, 246, 0.07);
+
+                    color: #cbbef1;
+
+                    font-size: 11px;
+
+                    line-height: 1.6;
+                  "
+                >
+                  Archive keeps the listing in your database and hides it from customers.
+                </div>
+              `
+          }
+
+
+          <div
+            style="
+              display: grid;
+
+              gap: 9px;
+
+              margin-top: 22px;
+            "
+          >
+
+            <button
+              id="archiveChoice"
+              type="button"
+              style="
+                height: 46px;
+
+                border:
+                  1px solid
+                  rgba(167, 139, 250, 0.4);
+
+                border-radius: 10px;
+
+                background:
+                  rgba(139, 92, 246, 0.14);
+
+                color: #e5ddff;
+
+                font-weight: 850;
+
+                cursor: pointer;
+              "
+            >
+              Archive Listing
+            </button>
+
+
+            <button
+              id="deleteForeverChoice"
+              type="button"
+              style="
+                height: 46px;
+
+                border:
+                  1px solid
+                  rgba(255, 83, 70, 0.42);
+
+                border-radius: 10px;
+
+                background:
+                  rgba(255, 60, 45, 0.11);
+
+                color: #ff9d94;
+
+                font-weight: 850;
+
+                cursor: pointer;
+              "
+            >
+              Delete Permanently
+            </button>
+
+
+            <button
+              id="cancelChoice"
+              type="button"
+              style="
+                height: 42px;
+
+                border:
+                  1px solid
+                  rgba(255, 255, 255, 0.08);
+
+                border-radius: 10px;
+
+                background:
+                  rgba(255, 255, 255, 0.025);
+
+                color: #9993a1;
+
+                font-weight: 800;
+
+                cursor: pointer;
+              "
+            >
+              Cancel
+            </button>
+
+          </div>
+
+        </div>
+      `;
+
+
+      document.body.appendChild(
+        overlay
+      );
+
+
+      const finish =
+        choice => {
+
+          overlay.remove();
+
+          resolve(choice);
+        };
+
+
+      overlay
+        .querySelector(
+          "#archiveChoice"
+        )
+        .addEventListener(
+          "click",
+          () =>
+            finish(
+              "archive"
+            )
+        );
+
+
+      overlay
+        .querySelector(
+          "#deleteForeverChoice"
+        )
+        .addEventListener(
+          "click",
+          () =>
+            finish(
+              "delete"
+            )
+        );
+
+
+      overlay
+        .querySelector(
+          "#cancelChoice"
+        )
+        .addEventListener(
+          "click",
+          () =>
+            finish(
+              "cancel"
+            )
+        );
+
+
+      overlay.addEventListener(
+        "click",
+        event => {
+
+          if (
+            event.target ===
+            overlay
+          ) {
+
+            finish(
+              "cancel"
+            );
+          }
+
+        }
+      );
+
+    }
+  );
+
+}
+
+
+async function getProductOrderCount(
+  productId
+) {
+
+  const {
+    data,
+    error
+  } =
+    await supabase
+      .from("order_items")
+      .select(
+        "order_id"
+      )
+      .eq(
+        "product_id",
+        productId
+      );
+
+
+  if (error) {
+
+    throw error;
   }
+
+
+  const uniqueOrders =
+    new Set(
+      (data || [])
+        .map(
+          item =>
+            item.order_id
+        )
+        .filter(Boolean)
+    );
+
+
+  return uniqueOrders.size;
+}
+
+
+async function archiveProduct(
+  productId,
+  productName
+) {
 
   const {
     error
-  } = await supabase
-    .from("products")
-    .delete()
-    .eq("id", id);
+  } =
+    await supabase
+      .from("products")
+      .update({
+        status: "draft",
+        is_hot: false
+      })
+      .eq(
+        "id",
+        productId
+      );
+
 
   if (error) {
-    console.error(error);
+
+    throw error;
+  }
+
+
+  alert(
+    `"${productName}" has been archived.`
+  );
+
+
+  await Promise.all([
+    loadProducts(),
+    loadStats()
+  ]);
+}
+
+
+async function permanentDeleteProduct(
+  productId,
+  productName,
+  orderCount
+) {
+
+  let warning =
+    `PERMANENT DELETE\n\n"${productName}"`;
+
+
+  if (
+    orderCount > 0
+  ) {
+
+    warning +=
+      `\n\nThis listing appears in ${orderCount} order${orderCount === 1 ? "" : "s"}.`;
+
+    warning +=
+      "\n\nLinked order item records will also be deleted.";
+  }
+
+
+  warning +=
+    "\n\nThis action cannot be reversed.";
+
+
+  const confirmed =
+    confirm(
+      warning
+    );
+
+
+  if (!confirmed) {
+
+    return;
+  }
+
+
+  if (
+    orderCount > 0
+  ) {
+
+    const {
+      error:
+        orderItemDeleteError
+    } =
+      await supabase
+        .from("order_items")
+        .delete()
+        .eq(
+          "product_id",
+          productId
+        );
+
 
     if (
-      error.code === "23503" ||
-      error.message.includes(
-        "order_items_product_id_fkey"
-      )
+      orderItemDeleteError
     ) {
-      alert(
-        "This product is connected to an existing order and cannot be deleted."
+
+      throw orderItemDeleteError;
+    }
+  }
+
+
+  const {
+    error:
+      productDeleteError
+  } =
+    await supabase
+      .from("products")
+      .delete()
+      .eq(
+        "id",
+        productId
+      );
+
+
+  if (
+    productDeleteError
+  ) {
+
+    throw productDeleteError;
+  }
+
+
+  alert(
+    `"${productName}" was permanently deleted.`
+  );
+
+
+  await Promise.all([
+    loadProducts(),
+    loadStats()
+  ]);
+}
+
+
+async function deleteProduct(id) {
+
+  const product =
+    products.find(
+      item =>
+        String(
+          item.id
+        ) ===
+        String(id)
+    );
+
+
+  if (!product) {
+
+    alert(
+      "Product not found."
+    );
+
+    return;
+  }
+
+
+  const productName =
+    product.name ||
+    "Unnamed product";
+
+
+  try {
+
+    const orderCount =
+      await getProductOrderCount(
+        id
+      );
+
+
+    const choice =
+      await openDeleteChoiceModal(
+        productName,
+        orderCount
+      );
+
+
+    if (
+      choice === "cancel"
+    ) {
+
+      return;
+    }
+
+
+    if (
+      choice === "archive"
+    ) {
+
+      await archiveProduct(
+        id,
+        productName
       );
 
       return;
     }
 
-    alert(
-      `Unable to delete product:\n${error.message}`
-    );
 
-    return;
+    if (
+      choice === "delete"
+    ) {
+
+      await permanentDeleteProduct(
+        id,
+        productName,
+        orderCount
+      );
+    }
+
+  } catch (error) {
+
+    console.error(error);
+
+
+    alert(
+      `Unable to manage product:\n${error.message}`
+    );
   }
 
-  await loadProducts();
 }
 
 
 function resetImagePreview() {
+
   if (productImageInput) {
-    productImageInput.value = "";
+
+    productImageInput.value =
+      "";
   }
+
 
   if (thumbnailUrlInput) {
-    thumbnailUrlInput.value = "";
+
+    thumbnailUrlInput.value =
+      "";
   }
+
 
   if (productImagePreviewImg) {
-    productImagePreviewImg.removeAttribute(
-      "src"
-    );
+
+    productImagePreviewImg
+      .removeAttribute(
+        "src"
+      );
   }
 
+
   if (productImageFileName) {
+
     productImageFileName.textContent =
       "Current image";
   }
 
-  productImagePreview?.classList.add(
-    "hidden"
-  );
+
+  if (productImagePreview) {
+
+    productImagePreview.classList.add(
+      "hidden"
+    );
+  }
+
 }
 
 
@@ -801,91 +1672,140 @@ function showImagePreview(
   url,
   fileName = "Current image"
 ) {
+
   if (!url) {
+
     resetImagePreview();
+
     return;
   }
 
-  productImagePreviewImg.src =
-    url;
 
-  productImageFileName.textContent =
-    fileName;
+  if (productImagePreviewImg) {
 
-  productImagePreview.classList.remove(
-    "hidden"
-  );
+    productImagePreviewImg.src =
+      url;
+  }
+
+
+  if (productImageFileName) {
+
+    productImageFileName.textContent =
+      fileName;
+  }
+
+
+  if (productImagePreview) {
+
+    productImagePreview.classList.remove(
+      "hidden"
+    );
+  }
+
 }
 
 
 function openCreateModal() {
+
   productForm.reset();
+
 
   document.getElementById(
     "editingProductId"
-  ).value = "";
+  ).value =
+    "";
+
 
   document.getElementById(
     "productStatus"
-  ).value = "active";
+  ).value =
+    "active";
+
 
   document.getElementById(
     "category"
-  ).value = "toy";
+  ).value =
+    "toy";
+
 
   document.getElementById(
     "isHot"
-  ).checked = false;
+  ).checked =
+    false;
+
 
   saveProductButton.textContent =
     "Create Product";
 
-  productMessage.textContent = "";
-  productMessage.style.color = "";
+
+  productMessage.textContent =
+    "";
+
+  productMessage.style.color =
+    "";
+
 
   resetImagePreview();
+
 
   productModal.classList.remove(
     "hidden"
   );
+
 }
 
 
-function openEditModal(product) {
+function openEditModal(
+  product
+) {
+
   document.getElementById(
     "editingProductId"
   ).value =
     product.id;
 
+
   document.getElementById(
     "productName"
   ).value =
-    product.name || "";
+    product.name ||
+    "";
+
 
   document.getElementById(
     "limitedId"
   ).value =
-    product.limited_id || "";
+    product.limited_id ||
+    "";
+
 
   document.getElementById(
     "description"
   ).value =
-    product.description || "";
+    product.description ||
+    "";
+
 
   document.getElementById(
     "price"
   ).value =
-    product.price ?? "";
+    product.price ??
+    "";
+
 
   document.getElementById(
     "stock"
   ).value =
-    product.stock ?? "";
+    product.stock ??
+    "";
+
 
   const category =
     String(
-      product.category || "toy"
+      product.category ||
+      "toy"
     ).toLowerCase();
+
 
   document.getElementById(
     "category"
@@ -894,86 +1814,131 @@ function openEditModal(product) {
       ? "game"
       : "toy";
 
+
   document.getElementById(
     "sellerName"
   ).value =
-    product.seller_name || "";
+    product.seller_name ||
+    "";
+
 
   document.getElementById(
     "itemUrl"
   ).value =
-    product.item_url || "";
+    product.item_url ||
+    "";
+
 
   document.getElementById(
     "productStatus"
   ).value =
-    product.status || "active";
+    product.status ||
+    "active";
+
 
   document.getElementById(
     "isHot"
   ).checked =
-    product.is_hot === true;
+    product.is_hot ===
+    true;
+
 
   thumbnailUrlInput.value =
-    product.thumbnail_url || "";
+    product.thumbnail_url ||
+    "";
 
-  productImageInput.value = "";
 
-  if (product.thumbnail_url) {
+  productImageInput.value =
+    "";
+
+
+  if (
+    product.thumbnail_url
+  ) {
+
     showImagePreview(
       product.thumbnail_url,
       "Current product image"
     );
+
   } else {
-    productImagePreview.classList.add(
-      "hidden"
-    );
+
+    productImagePreview
+      .classList.add(
+        "hidden"
+      );
   }
+
 
   saveProductButton.textContent =
     "Save Changes";
 
-  productMessage.textContent = "";
-  productMessage.style.color = "";
+
+  productMessage.textContent =
+    "";
+
+  productMessage.style.color =
+    "";
+
 
   productModal.classList.remove(
     "hidden"
   );
+
 }
 
 
 function closeModal() {
+
   productModal.classList.add(
     "hidden"
   );
 
+
   productForm.reset();
+
 
   document.getElementById(
     "editingProductId"
-  ).value = "";
+  ).value =
+    "";
+
 
   saveProductButton.textContent =
     "Create Product";
 
-  productMessage.textContent = "";
-  productMessage.style.color = "";
+
+  productMessage.textContent =
+    "";
+
+  productMessage.style.color =
+    "";
+
 
   resetImagePreview();
+
 }
 
 
-function getFileExtension(file) {
-  const name =
-    String(file.name || "");
+function getFileExtension(
+  file
+) {
+
+  const fileName =
+    String(
+      file.name ||
+      ""
+    );
+
 
   const extension =
-    name.includes(".")
-      ? name
+    fileName.includes(".")
+      ? fileName
           .split(".")
           .pop()
           .toLowerCase()
       : "";
+
 
   if (
     [
@@ -981,33 +1946,48 @@ function getFileExtension(file) {
       "jpeg",
       "png",
       "webp"
-    ].includes(extension)
+    ].includes(
+      extension
+    )
   ) {
+
     return extension;
   }
 
+
   if (
-    file.type === "image/png"
+    file.type ===
+    "image/png"
   ) {
+
     return "png";
   }
 
+
   if (
-    file.type === "image/webp"
+    file.type ===
+    "image/webp"
   ) {
+
     return "webp";
   }
+
 
   return "jpg";
 }
 
 
-async function uploadProductImage(file) {
+async function uploadProductImage(
+  file
+) {
+
   if (!currentUser) {
+
     throw new Error(
       "Admin session not found."
     );
   }
+
 
   const allowedTypes = [
     "image/jpeg",
@@ -1015,154 +1995,216 @@ async function uploadProductImage(file) {
     "image/webp"
   ];
 
+
   if (
     !allowedTypes.includes(
       file.type
     )
   ) {
+
     throw new Error(
       "Use a JPG, PNG, or WEBP image."
     );
   }
 
+
   if (
     file.size >
     5 * 1024 * 1024
   ) {
+
     throw new Error(
       "Product image must stay below 5 MB."
     );
   }
 
+
   const extension =
-    getFileExtension(file);
+    getFileExtension(
+      file
+    );
+
 
   const uniqueId =
     typeof crypto.randomUUID ===
     "function"
       ? crypto.randomUUID()
-      : String(Date.now());
+      : String(
+          Date.now()
+        );
+
 
   const filePath =
     `${currentUser.id}/${Date.now()}-${uniqueId}.${extension}`;
 
+
   const {
     error: uploadError
-  } = await supabase.storage
-    .from("product-images")
-    .upload(
-      filePath,
-      file,
-      {
-        cacheControl: "3600",
-        upsert: false,
-        contentType: file.type
-      }
-    );
+  } =
+    await supabase.storage
+      .from(
+        "product-images"
+      )
+      .upload(
+        filePath,
+        file,
+        {
+          cacheControl:
+            "3600",
+
+          upsert:
+            false,
+
+          contentType:
+            file.type
+        }
+      );
+
 
   if (uploadError) {
+
     throw uploadError;
   }
 
+
   const {
     data: publicData
-  } = supabase.storage
-    .from("product-images")
-    .getPublicUrl(filePath);
+  } =
+    supabase.storage
+      .from(
+        "product-images"
+      )
+      .getPublicUrl(
+        filePath
+      );
+
 
   const publicUrl =
     publicData?.publicUrl;
 
+
   if (!publicUrl) {
+
     throw new Error(
       "Product image URL was not generated."
     );
   }
 
+
   return publicUrl;
 }
 
 
-async function saveProduct(event) {
+async function saveProduct(
+  event
+) {
+
   event.preventDefault();
+
 
   const editingId =
     document.getElementById(
       "editingProductId"
     ).value;
 
-  productMessage.style.color = "";
+
+  productMessage.style.color =
+    "";
+
 
   productMessage.textContent =
-    productImageInput.files?.[0]
+    productImageInput
+      .files?.[0]
       ? "Uploading image..."
       : editingId
         ? "Saving changes..."
         : "Creating product...";
 
-  saveProductButton.disabled = true;
+
+  saveProductButton.disabled =
+    true;
+
 
   try {
+
     let imageUrl =
-      thumbnailUrlInput.value.trim();
+      thumbnailUrlInput
+        .value
+        .trim();
+
 
     const imageFile =
-      productImageInput.files?.[0];
+      productImageInput
+        .files?.[0];
+
 
     if (imageFile) {
+
       imageUrl =
         await uploadProductImage(
           imageFile
         );
     }
 
+
     const productData = {
+
       name:
         document
           .getElementById(
             "productName"
           )
-          .value.trim(),
+          .value
+          .trim(),
 
       limited_id:
         document
           .getElementById(
             "limitedId"
           )
-          .value.trim(),
+          .value
+          .trim(),
 
       description:
         document
           .getElementById(
             "description"
           )
-          .value.trim(),
+          .value
+          .trim(),
 
       price:
         Number(
-          document.getElementById(
-            "price"
-          ).value
+          document
+            .getElementById(
+              "price"
+            )
+            .value
         ),
 
       stock:
         Number(
-          document.getElementById(
-            "stock"
-          ).value
+          document
+            .getElementById(
+              "stock"
+            )
+            .value
         ),
 
       category:
-        document.getElementById(
-          "category"
-        ).value,
+        document
+          .getElementById(
+            "category"
+          )
+          .value,
 
       seller_name:
         document
           .getElementById(
             "sellerName"
           )
-          .value.trim(),
+          .value
+          .trim(),
 
       thumbnail_url:
         imageUrl,
@@ -1172,51 +2214,74 @@ async function saveProduct(event) {
           .getElementById(
             "itemUrl"
           )
-          .value.trim(),
+          .value
+          .trim(),
 
       status:
-        document.getElementById(
-          "productStatus"
-        ).value,
+        document
+          .getElementById(
+            "productStatus"
+          )
+          .value,
 
       is_hot:
-        document.getElementById(
-          "isHot"
-        ).checked
+        document
+          .getElementById(
+            "isHot"
+          )
+          .checked
+
     };
+
 
     let result;
 
+
     if (editingId) {
-      result = await supabase
-        .from("products")
-        .update(productData)
-        .eq(
-          "id",
-          editingId
-        );
+
+      result =
+        await supabase
+          .from("products")
+          .update(
+            productData
+          )
+          .eq(
+            "id",
+            editingId
+          );
+
     } else {
-      result = await supabase
-        .from("products")
-        .insert(productData);
+
+      result =
+        await supabase
+          .from("products")
+          .insert(
+            productData
+          );
     }
 
+
     if (result.error) {
+
       throw result.error;
     }
 
+
     productMessage.style.color =
       "#7cff9b";
+
 
     productMessage.textContent =
       editingId
         ? "Product updated successfully."
         : "Product created successfully.";
 
+
     await Promise.all([
       loadProducts(),
       loadStats()
     ]);
+
 
     setTimeout(
       closeModal,
@@ -1224,23 +2289,31 @@ async function saveProduct(event) {
     );
 
   } catch (error) {
-    console.error(error);
+
+    console.error(
+      error
+    );
+
 
     productMessage.style.color =
       "#ff8f8f";
+
 
     productMessage.textContent =
       error.message ||
       "Unable to save product.";
 
   } finally {
+
     saveProductButton.disabled =
       false;
   }
+
 }
 
 
 function setupNavigation() {
+
   const dashboardNav =
     document.getElementById(
       "dashboardNav"
@@ -1261,172 +2334,281 @@ function setupNavigation() {
       "settingsNav"
     );
 
-  dashboardNav.addEventListener(
-    "click",
-    () => {
-      showSection(
-        dashboardSection,
-        "Dashboard",
-        dashboardNav
-      );
-    }
-  );
 
-  productsNav.addEventListener(
-    "click",
-    () => {
-      showSection(
-        productsSection,
-        "Products",
-        productsNav
-      );
-    }
-  );
+  if (dashboardNav) {
 
-  customersNav.addEventListener(
-    "click",
-    async () => {
-      showSection(
-        customersSection,
-        "Customers",
-        customersNav
-      );
+    dashboardNav.addEventListener(
+      "click",
+      () => {
 
-      await loadCustomers();
-    }
-  );
+        showSection(
+          dashboardSection,
+          "Dashboard",
+          dashboardNav
+        );
 
-  settingsNav.addEventListener(
-    "click",
-    () => {
-      showSection(
-        settingsSection,
-        "Settings",
-        settingsNav
-      );
-    }
-  );
+      }
+    );
+  }
+
+
+  if (productsNav) {
+
+    productsNav.addEventListener(
+      "click",
+      () => {
+
+        showSection(
+          productsSection,
+          "Products",
+          productsNav
+        );
+
+      }
+    );
+  }
+
+
+  if (customersNav) {
+
+    customersNav.addEventListener(
+      "click",
+      async () => {
+
+        showSection(
+          customersSection,
+          "Customers",
+          customersNav
+        );
+
+
+        await loadCustomers();
+
+      }
+    );
+  }
+
+
+  if (settingsNav) {
+
+    settingsNav.addEventListener(
+      "click",
+      () => {
+
+        showSection(
+          settingsSection,
+          "Settings",
+          settingsNav
+        );
+
+      }
+    );
+  }
+
 }
 
 
 function setupImageUpload() {
-  productImageInput.addEventListener(
-    "change",
-    () => {
-      const file =
-        productImageInput.files?.[0];
 
-      if (!file) {
-        return;
-      }
+  if (productImageInput) {
 
-      const previewUrl =
-        URL.createObjectURL(file);
+    productImageInput
+      .addEventListener(
+        "change",
+        () => {
 
-      showImagePreview(
-        previewUrl,
-        file.name
+          const file =
+            productImageInput
+              .files?.[0];
+
+
+          if (!file) {
+
+            return;
+          }
+
+
+          const previewUrl =
+            URL.createObjectURL(
+              file
+            );
+
+
+          showImagePreview(
+            previewUrl,
+            file.name
+          );
+
+        }
       );
-    }
-  );
+  }
 
-  removeProductImageButton.addEventListener(
-    "click",
-    () => {
-      resetImagePreview();
-    }
-  );
+
+  if (
+    removeProductImageButton
+  ) {
+
+    removeProductImageButton
+      .addEventListener(
+        "click",
+        () => {
+
+          resetImagePreview();
+
+        }
+      );
+  }
+
 }
 
 
 async function start() {
+
   const user =
     await protectAdminPage();
 
+
   if (!user) {
+
     return;
   }
 
+
   setupNavigation();
+
   setupImageUpload();
 
-  document
-    .getElementById(
+
+  const createProductButton =
+    document.getElementById(
       "createProductButton"
-    )
-    .addEventListener(
-      "click",
-      openCreateModal
     );
 
-  document
-    .getElementById(
+  const createProductButtonSecondary =
+    document.getElementById(
       "createProductButtonSecondary"
-    )
-    .addEventListener(
-      "click",
-      openCreateModal
     );
 
-  document
-    .getElementById(
+  const productsCreateButton =
+    document.getElementById(
       "productsCreateButton"
-    )
-    .addEventListener(
-      "click",
-      openCreateModal
     );
 
-  document
-    .getElementById(
+  const closeModalButton =
+    document.getElementById(
       "closeModalButton"
-    )
-    .addEventListener(
-      "click",
-      closeModal
     );
 
-  document
-    .getElementById(
+  const cancelProductButton =
+    document.getElementById(
       "cancelProductButton"
-    )
-    .addEventListener(
-      "click",
-      closeModal
     );
 
-  document
-    .getElementById(
+  const modalOverlay =
+    document.getElementById(
       "modalOverlay"
-    )
-    .addEventListener(
-      "click",
-      closeModal
     );
 
-  productForm.addEventListener(
-    "submit",
-    saveProduct
-  );
-
-  document
-    .getElementById(
+  const logoutButton =
+    document.getElementById(
       "logoutButton"
-    )
-    .addEventListener(
-      "click",
-      async () => {
-        await supabase.auth.signOut();
-
-        window.location.href =
-          "./login.html";
-      }
     );
+
+
+  if (createProductButton) {
+
+    createProductButton
+      .addEventListener(
+        "click",
+        openCreateModal
+      );
+  }
+
+
+  if (
+    createProductButtonSecondary
+  ) {
+
+    createProductButtonSecondary
+      .addEventListener(
+        "click",
+        openCreateModal
+      );
+  }
+
+
+  if (productsCreateButton) {
+
+    productsCreateButton
+      .addEventListener(
+        "click",
+        openCreateModal
+      );
+  }
+
+
+  if (closeModalButton) {
+
+    closeModalButton
+      .addEventListener(
+        "click",
+        closeModal
+      );
+  }
+
+
+  if (cancelProductButton) {
+
+    cancelProductButton
+      .addEventListener(
+        "click",
+        closeModal
+      );
+  }
+
+
+  if (modalOverlay) {
+
+    modalOverlay
+      .addEventListener(
+        "click",
+        closeModal
+      );
+  }
+
+
+  if (productForm) {
+
+    productForm
+      .addEventListener(
+        "submit",
+        saveProduct
+      );
+  }
+
+
+  if (logoutButton) {
+
+    logoutButton
+      .addEventListener(
+        "click",
+        async () => {
+
+          await supabase.auth.signOut();
+
+          window.location.href =
+            "./login.html";
+
+        }
+      );
+  }
+
 
   await Promise.all([
     loadProducts(),
     loadStats()
   ]);
+
 }
 
 
