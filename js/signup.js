@@ -38,13 +38,11 @@ signupForm.addEventListener(
       return;
     }
 
-    const {
-      data,
-      error
-    } = await supabase.auth.signUp({
-      email,
-      password
-    });
+    const { data, error } =
+      await supabase.auth.signUp({
+        email,
+        password
+      });
 
     if (error) {
       signupMessage.textContent =
@@ -55,7 +53,12 @@ signupForm.addEventListener(
 
     if (!data.session) {
       signupMessage.textContent =
-        "Account created. Check your email to confirm your account.";
+        "Account created. Please sign in.";
+
+      setTimeout(() => {
+        window.location.href =
+          "https://limzl1128.github.io/LZL-STORE/html/login.html";
+      }, 1000);
 
       return;
     }
@@ -65,7 +68,7 @@ signupForm.addEventListener(
 
     setTimeout(() => {
       window.location.href =
-        "/LZL-STORE/html/store.html";
+        "https://limzl1128.github.io/LZL-STORE/html/store.html";
     }, 800);
 
   }
